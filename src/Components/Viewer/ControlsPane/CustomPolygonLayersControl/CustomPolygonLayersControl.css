@@ -1,0 +1,10 @@
+.tile-layers-contol {
+  text-align: left;
+  font-size: 12pt;
+  margin-top: 1em;
+  /* border: 1px solid black; */
+}
+
+span.controls-pane-checkbox {
+  padding: 5px;
+}
