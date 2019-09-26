@@ -654,6 +654,7 @@ class Viewer extends PureComponent {
             jumpToMessage={this.state.jumpToMessage}
             onDataPaneAction={this.onDataPaneAction}
             onFlyTo={this.onFlyTo}
+            onDeselect={this.deselectCurrentElement}
             onPolygonChange={this.onPolygonChange}
             onLayersChange={this.onLayersChange}
             onFeatureClick={this.selectFeature}

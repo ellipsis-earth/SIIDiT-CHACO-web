@@ -144,7 +144,7 @@ class GeoMessageControl extends PureComponent {
     return {
       applyToMap: false,
       selectedGroups: [],
-      selectedTypes: [],
+      selectedTypes: ['polygon'],
       selectedForms: []
     };
   }
@@ -532,7 +532,14 @@ class GeoMessageControl extends PureComponent {
     };
 
     if (!isCheckbox) {
-      filterSettings[property] = e.target.value;
+      if(property === 'selectedTypes')
+      {
+        filterSettings[property] = [e.target.value];
+      }
+      else
+      {
+        filterSettings[property] = e.target.value;
+      }
     }
     else {
       filterSettings[property] = e.target.checked;
@@ -541,6 +548,9 @@ class GeoMessageControl extends PureComponent {
     if (this.getFeedMessagesTimer) {
       clearTimeout(this.getFeedMessagesTimer);
     }
+
+    console.log(filterSettings);
+
 
     this.setState({ filterSettings: filterSettings }, () => {
       let refreshFunc = null;
@@ -724,16 +734,16 @@ class GeoMessageControl extends PureComponent {
               <InputLabel htmlFor='select-multiple-checkbox-forms'>Type filter</InputLabel>
               <Select
                 className='selector'
-                multiple
                 value={this.state.filterSettings.selectedTypes}
                 onChange={(e) => this.onFilterChange(e, 'selectedTypes', false, REFRESH_MODE.full)}
-                input={<Input id='select-multiple-checkbox-forms' />}
-                renderValue={selected => selected.join(', ')}
+                /*input={<Input id='select-multiple-checkbox-forms' />}
+                renderValue={selected => selected.join(', ')}*/
               >
                 {[ViewerUtility.standardTileLayerType, ViewerUtility.polygonLayerType].map(type => (
                   <MenuItem key={type} value={type}>
-                    <Checkbox checked={this.state.filterSettings.selectedTypes.includes(type)} />
-                    <ListItemText primary={type} />
+                    {/*<Checkbox checked={this.state.filterSettings.selectedTypes.includes(type)} />
+                                        <ListItemText primary={type} />*/}
+                    {type}
                   </MenuItem>
                 ))}
               </Select>

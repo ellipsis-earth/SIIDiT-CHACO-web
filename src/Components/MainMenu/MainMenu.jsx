@@ -82,7 +82,6 @@ export class MainMenu extends Component {
   }
 
   render() {
-    console.log(this.props.user)
     let displayStyle = {
         display: 'block'
     };
@@ -115,7 +114,7 @@ export class MainMenu extends Component {
             <Nav className='mr-auto'>
               <NavItem>
                 <NavLink to={this.props.user ? '/account': '/login'} onClick={() => this.onNavItemClick(navKeys.login)}>
-                  <ToggleButton selected={navItemClass(navKeys.login)}>
+                  <ToggleButton selected={navItemClass(navKeys.login)} value={this.props.user ? this.props.user.username : 'Login'}>
                     {this.props.user ? this.props.user.username : 'Login'}
                   </ToggleButton>
                 </NavLink>
