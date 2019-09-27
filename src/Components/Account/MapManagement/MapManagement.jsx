@@ -55,9 +55,12 @@ class MapManagement extends PureComponent {
   getMaps = async () => {
     ApiManager.fetch('GET', '/account/myMaps', null, this.props.user)
       .then(result => {
-        let relevantMaps = result.filter(map => map.accessLevel >= 800);
+        let relevantMaps = result.filter(map => map.id === "6b696129-659a-4cf4-8dd6-2cf0642f58db");
 
-        this.setState({ maps: relevantMaps });
+        let fauxE = {
+          target: {value: "6b696129-659a-4cf4-8dd6-2cf0642f58db"}
+        }
+        this.setState({ maps: relevantMaps }, () => {this.onMapSelect(fauxE)});
       })
       .catch(err => {
         showError(err);
@@ -182,11 +185,11 @@ class MapManagement extends PureComponent {
       mapManagementArea = (
         <div>
           <div className='map-management-select'>
-            <select onChange={this.onMapSelect} defaultValue='default'>
+            {/*<select onChange={this.onMapSelect} defaultValue='default'>
               <option value='default' disabled hidden>{'Select a Map'}</option>
               {this.renderMapOptions()}
             </select>
-            {/* <div style={{ textAlign: 'left' }}>
+             <div style={{ textAlign: 'left' }}>
               <div className='tooltip'>
                 {this.props.localization['Access levels']}
                 <span className='tooltiptext' dangerouslySetInnerHTML={{__html: this.props.localization['levels']}}/>

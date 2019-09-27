@@ -18,6 +18,8 @@ import ViewerUtility from '../ViewerUtility';
 import './SelectionPane.css';
 import ApiManager from '../../../ApiManager';
 
+import { Redirect } from 'react-router';
+
 const DELETE_CUSTOM_POLYGON_ACTION = 'delete_custom_polygon';
 
 class SelectionPane extends PureComponent {
@@ -27,7 +29,8 @@ class SelectionPane extends PureComponent {
 
     this.state = {
       isOpen: false,
-      loading: false
+      loading: false,
+      redirect: false,
     };
   }
 
@@ -123,6 +126,10 @@ class SelectionPane extends PureComponent {
   }
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect push to="/login" />;
+    }
+
     if (!this.state.isOpen) {
       return null;
     }
@@ -155,7 +162,7 @@ class SelectionPane extends PureComponent {
       </Button>
     );
 
-    if (element.type !== ViewerUtility.drawnPolygonLayerType) {
+    if (element.type !== ViewerUtility.drawnPolygonLayerType && mapAccessLevel >= 525) {
       firstRowButtons.push((
         <Button
           key='geoMessage'
@@ -180,28 +187,43 @@ class SelectionPane extends PureComponent {
         (mapAccessLevel > ApiManager.accessLevels.alterOrDeleteCustomPolygons ||
         element.feature.properties.user === user.username);
 
-      secondRowButtons.push(
-        <Button
-          key='edit'
+      if (user)
+      {
+        secondRowButtons.push(
+          <Button
+            key='edit'
+            variant='outlined'
+            size='small'
+            className='selection-pane-button'
+            onClick={() => this.onElementActionClick(ViewerUtility.dataPaneAction.editCustomPolygon)}
+            disabled={!canEdit}
+          >
+            {'EDIT'}
+          </Button>,
+          <Button
+            key='delete'
+            variant='outlined'
+            size='small'
+            className='selection-pane-button'
+            onClick={() => this.onElementActionClick(DELETE_CUSTOM_POLYGON_ACTION)}
+            disabled={!canEdit}
+          >
+            {'DELETE'}
+          </Button>
+        ); 
+      }
+      else
+      {
+        secondRowButtons.push(<Button
+          key='logIn'
           variant='outlined'
           size='small'
           className='selection-pane-button'
-          onClick={() => this.onElementActionClick(ViewerUtility.dataPaneAction.editCustomPolygon)}
-          disabled={!canEdit}
+          onClick={() => {this.setState({redirect: true})}}
         >
-          {'EDIT'}
-        </Button>,
-        <Button
-          key='delete'
-          variant='outlined'
-          size='small'
-          className='selection-pane-button'
-          onClick={() => this.onElementActionClick(DELETE_CUSTOM_POLYGON_ACTION)}
-          disabled={!canEdit}
-        >
-          {'DELETE'}
-        </Button>
-      );
+          {'PLEASE LOGIN'}
+        </Button>)
+      }
     }
     else if (element.type === ViewerUtility.drawnPolygonLayerType) {
       title = 'Drawn polygon';

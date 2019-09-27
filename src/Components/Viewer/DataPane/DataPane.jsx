@@ -22,6 +22,7 @@ import LegendControl from './LegendControl/LegendControl';
 import AnalyseControl from './AnalyseControl/AnalyseControl';
 import GeoMessageControl from './GeoMessageControl/GeoMessageControl';
 import CustomPolygonControl from './CustomPolygonControl/CustomPolygonControl';
+import InfoCards from './InfoCards/InfoCards';
 
 import ApiManager from '../../../ApiManager';
 
@@ -30,7 +31,7 @@ class DataPane extends PureComponent {
     super(props, context);
 
     this.state = {
-      home: true
+      home: true,
     };
   }
 
@@ -55,7 +56,7 @@ class DataPane extends PureComponent {
   onFlyTo = () => {
     let action = this.props.action;
 
-    if (action === ViewerUtility.dataPaneAction.feed) {
+    if (action === ViewerUtility.dataPaneAction.feed || this.state.home) {
       this.props.onFlyTo({ type: ViewerUtility.flyToType.map });
     }
     else {
@@ -89,20 +90,20 @@ class DataPane extends PureComponent {
 
         homeElement = (
           <div>
-            <Button
-              className='geomessage-feed-button'
-              variant='contained'
-              color='primary'
-              disabled={!hasGeoMessageAccess}
-              onClick={() => this.props.onDataPaneAction(ViewerUtility.dataPaneAction.feed)}
-            >
-              {'GEOMESSAGE FEED'}
-            </Button>
+            {map.accessLevel >= 525 ? [<Button
+                className='geomessage-feed-button'
+                variant='contained'
+                color='primary'
+                disabled={!hasGeoMessageAccess}
+                onClick={() => this.props.onDataPaneAction(ViewerUtility.dataPaneAction.feed)}
+              >
+                {'GEOMESSAGE FEED'}
+              </Button>, <br /> ]: null}
+            <InfoCards />
             <LegendControl
               map={this.props.map}
             />
           </div>
-
         );
       }
       else {

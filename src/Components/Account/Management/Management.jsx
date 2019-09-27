@@ -20,13 +20,13 @@ class AccountManagement extends PureComponent {
     return (
       <div className="management-block">
         <h1 className='account-title'>
-          {'Account Management'}
+          Account Management
         </h1>
 
         <div className='management-input-label-div'>
           <NavLink to='/account/changePassword' className="button-a">
             <div className="button  main-block-single-button">
-              {'ChangePassword'}
+              Change Password
             </div>
           </NavLink>
         </div>
@@ -34,25 +34,27 @@ class AccountManagement extends PureComponent {
         <div className='management-input-label-div'>
           <NavLink to='/account/changeEmail' className="button-a">
             <div className="button  main-block-single-button">
-              {'Change Email'}
+              Change Email
             </div>
           </NavLink>
         </div>
 
-        <div className='management-input-label-div'>
-          <NavLink to='/account/mapManagement' className="button-a">
-            <div className="button  main-block-single-button">
-              {'Map Management'}
-            </div>
-          </NavLink>
-        </div>
+        {this.props.accessLevel >= 525 ?
+          <div className='management-input-label-div'>
+            <NavLink to='/account/mapManagement' className="button-a">
+              <div className="button  main-block-single-button">
+                Map Management
+              </div>
+            </NavLink>
+          </div> : null
+        }
 
         <br/>
 
         <div className='management-input-label-div'>
           <div className="button-a" onClick={this.logout.bind(this)}>
             <div className="button  main-block-single-button">
-              {'Logout'}
+              Logout
             </div>
           </div>
         </div>

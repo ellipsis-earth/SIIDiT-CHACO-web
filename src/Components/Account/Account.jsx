@@ -10,9 +10,38 @@ import ResetPassword from './ResetPassword/ResetPassword';
 import Register from './Register/Register';
 import MapManagement from './MapManagement/MapManagement';
 
+import ApiManager from '../../ApiManager';
+import ErrorHandler from '../../ErrorHandler';
+
 import "./Account.css";
 
 export class Account extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      accessLevel: -1,
+    }
+  }
+
+  componentDidMount()
+  {
+    ApiManager.get('/account/myMaps', null, this.props.user)
+      .then(maps => {
+        for (let i = 0; i < maps.length; i++)
+        {
+          if(maps[i].id === "6b696129-659a-4cf4-8dd6-2cf0642f58db")
+          {
+            this.setState({ accessLevel: maps[i].accessLevel});
+          }
+        }
+        
+      })
+      .catch(err => {
+        ErrorHandler.alert(err);
+      });
+  }
+
   render() {
     return (
       <div>
@@ -25,6 +54,7 @@ export class Account extends Component {
                 language={this.props.language}
                 user={this.props.user}
                 onLogout={this.props.onLogout}
+                accessLevel={this.state.accessLevel}
               />
             }
           />

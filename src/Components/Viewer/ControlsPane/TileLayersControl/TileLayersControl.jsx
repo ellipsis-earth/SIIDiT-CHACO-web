@@ -47,13 +47,13 @@ const tileLayerTypes = [
   },
   {
     name: LABELS_TILE_LAYER_NAME, 
-    defaultSelected: true,
+    defaultSelected: false,
     stacking: false,
     zIndex: ViewerUtility.tileLayerZIndex + 1 + 300,
   },
   {
     name: IMAGES2_TILE_LAYER_NAME,
-    defaultSelected: true,
+    defaultSelected: false,
     stacking: false,
     zIndex: ViewerUtility.tileLayerZIndex + 1 + 400
   }
@@ -166,7 +166,7 @@ class TileLayersControl extends PureComponent {
         continue;
       }
 
-      if (tileLayerType.defaultSelected) {
+      if (tileLayerType.defaultSelected && availableLayers[i].name !== 'CIR') {
         selectedLayers.push(availableLayer);
       }
     }
@@ -269,7 +269,7 @@ class TileLayersControl extends PureComponent {
             url={url}
             tileSize={256}
             noWrap={true}
-            maxZoom={map.zoom}
+            maxNativeZoom={map.zoom}
             format={'image/png'}
             zIndex={zIndex}
             bounds = {L.latLngBounds(L.latLng(map.yMin, map.xMin), L.latLng(map.yMax, map.xMax))}

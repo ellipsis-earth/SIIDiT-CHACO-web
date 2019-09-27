@@ -18,6 +18,11 @@ import SelectionPane from './SelectionPane/SelectionPane';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 
+import { Button } from '@material-ui/core';
+import InfoIcon from '@material-ui/icons/Info';
+import Control from 'react-leaflet-control';
+
+
 import './Viewer.css';
 
 // This block is purely to get the marker icon of Leaflet to work.
@@ -69,7 +74,7 @@ class Viewer extends PureComponent {
       leafletMapViewport: DEFAULT_VIEWPORT,
       isSmallWindow: false,
 
-      panes: [CONTROL_PANE_NAME, MAP_PANE_NAME],
+      panes: [/*CONTROL_PANE_NAME,*/ MAP_PANE_NAME, DATA_PANE_NAME],
 
       map: null,
       timestampRange: {
@@ -128,8 +133,6 @@ class Viewer extends PureComponent {
 
       this.setState({ panes: panes }, () => this.leafletMap.current.leafletElement.invalidateSize());
     });
-
-    this.initializeDrawingControl();
   }
 
   setLocation = (position) => {
@@ -253,6 +256,11 @@ class Viewer extends PureComponent {
     let dataPaneAction = this.state.dataPaneAction;
     if (dataPaneAction !== ViewerUtility.dataPaneAction.feed) {
       dataPaneAction = null;
+    }
+
+    if (map.accessLevel >= 525)
+    {
+      this.initializeDrawingControl();
     }
 
     this.setState({
@@ -637,6 +645,9 @@ class Viewer extends PureComponent {
               maxZoom={19}
               onViewportChanged={this.onLeafletMapViewportChanged}
             >
+              <Control position="bottomright">
+                <Button variant='contained' color='secondary' onClick={() => {window.open('https://youtu.be/5KXOH6HMLeM','_blank');}}><InfoIcon /></Button>
+              </Control>
               {this.state.allLayers}
               {this.state.geolocation ? <Marker position={this.state.geolocation}/> : null}
             </Map>
