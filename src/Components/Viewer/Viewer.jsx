@@ -86,7 +86,10 @@ class Viewer extends PureComponent {
 
       geolocation: null,
 
-      overrideLeafletLayers: null
+      overrideLeafletLayers: null,
+
+      filterData: {},
+      totals: {},
     };
   }
 
@@ -248,7 +251,57 @@ class Viewer extends PureComponent {
     }
   }
 
-  onSelectMap = (map) => {
+  prepareFilterData = async (map, layers) => {
+    let layerIdFilter = {}
+    let total = {};
+
+    for (let i = 0; i < layers.length; i++)
+    {
+      let loopBool = true;
+      let results = [];
+
+      let body = {
+        mapId: map.id,
+        page: 1,
+        filters: {forms: map.forms.filter((form) => {return form.uuid === layers[i].formID}).map(x => x.formName), types: layers[i].types}
+      }
+
+      while(loopBool)
+      {
+        let formPromises = [];
+
+        for (let j = 1; j < 6; j++)
+        {
+          formPromises.push(ApiManager.post('/geoMessage/feed', body, this.props.user));
+          body.page = body.page + 1;
+        }
+
+        let filtered = await Promise.all(formPromises);
+
+        if (filtered[filtered.length - 1].length < 100)
+        {
+          loopBool = false;
+        }
+
+        results.push(...[].concat(...filtered))
+      }
+
+      for (let k = 0; k < results.length; k++)
+      {
+        let element = results[k];
+        Array.isArray(layerIdFilter[element.type]) ? layerIdFilter[element.type].push(element.elementId) : layerIdFilter[element.type] = [element.elementId]
+        total[element.form.formName] = total[element.form.formName] ? total[element.form.formName] + element.form.answers[0].answer : element.form.answers[0].answer;
+        if(k === results.length - 1)
+        {
+          total[element.form.formName] = total[element.form.formName].toFixed(2);
+        }
+      }
+    }
+
+    return({ids: layerIdFilter, totals: total});
+  }
+
+  onSelectMap = async (map) => {
     this.selectedElementLayer = null;
     this.drawnPolygonLayer = null;
     this.drawnPolygonGeoJson = null;
@@ -263,6 +316,21 @@ class Viewer extends PureComponent {
       this.initializeDrawingControl();
     }
 
+    let filterData = await this.prepareFilterData(map, [
+      {
+        name: 'deforestation',
+        layerID: 'b4cfa212-9547-4d43-9119-1db5482954a3',
+        formID: '5fd5ebe0-9d02-11e9-baf8-42010a840021',
+        types: ['standard_tile'],
+      }, 
+      {
+        name: 'lack of forest',
+        layerID: "647c9802-f136-4029-aa6d-884396be4e9b",
+        formID: '0ef01ab2-9d01-11e9-baf8-42010a840021',
+        types: ['polygon'],
+      }
+    ]);
+
     this.setState({
       map: map,
       dataPaneAction: dataPaneAction,
@@ -271,10 +339,10 @@ class Viewer extends PureComponent {
         start: map.timestamps.length - 1,
         end: map.timestamps.length - 1
       },
-      overrideLeafletLayers: null
-    }, () => {
-      this.onFlyTo({ type: ViewerUtility.flyToType.map, delay: true });
-    });
+      overrideLeafletLayers: null,
+      filterData: filterData.ids,
+      totals: filterData.totals,
+    }, () => { this.onFlyTo({ type: ViewerUtility.flyToType.map, delay: true }); });
   }
 
   onLayersChange = (layers, isOverride) => {
@@ -669,6 +737,7 @@ class Viewer extends PureComponent {
             onPolygonChange={this.onPolygonChange}
             onLayersChange={this.onLayersChange}
             onFeatureClick={this.selectFeature}
+            totals={this.state.totals}
           />
         </div>
 

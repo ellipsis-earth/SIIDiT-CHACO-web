@@ -4,13 +4,16 @@ import {
   Card,
   CardHeader,
   CardActions,
+  Collapse,
   Typography,
   Button,
   IconButton,
-  CardContent
+  CardContent,
+  CircularProgress
 } from '@material-ui/core';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
@@ -32,6 +35,8 @@ class DataPane extends PureComponent {
 
     this.state = {
       home: true,
+      totals: null,
+      totalsOpen: true,
     };
   }
 
@@ -46,6 +51,54 @@ class DataPane extends PureComponent {
     }
     else if (prevProps.action && !this.props.action && !this.state.home) {
       this.setState({ home: true });
+    }
+
+    if (prevProps.totals !== this.props.totals)
+    {
+      this.prepareTotalsCard();
+    }
+  }
+
+  prepareTotalsCard = () => {
+    let totals = this.props.totals;
+    if (Object.entries(totals).length === 0 && totals.constructor === Object)
+    {
+      this.setState({totals: <CircularProgress className='loading-spinner'/>})
+    }
+    else
+    {
+      let content = [];
+      for(let key in totals)
+      {
+        content.push(<p key={key}>{key}: {totals[key]}</p>)
+      }
+
+      let card = (<Card className='data-pane-card TotalsCard' key={'deforestation' + this.state.totalsOpen}>
+        <CardHeader
+          className='material-card-header'
+          title={
+            <Typography gutterBottom variant="h6" component="h2">
+              {'Deforestation'}
+            </Typography>
+          }
+          action={
+            <IconButton
+              className={this.state.totalsOpen ? 'expand-icon expanded' : 'expand-icon'}
+              onClick={() => {this.setState({totalsOpen: !this.state.totalsOpen}, this.prepareTotalsCard())}}
+              aria-expanded={this.props.open}
+              aria-label='Show'
+            >
+              <ExpandMoreIcon />
+            </IconButton>
+          }
+        />
+        <Collapse in={this.state.totalsOpen}>
+          <CardContent className={'card-content'} >
+            {content}
+          </CardContent>
+        </Collapse>
+      </Card>)
+      this.setState({totals: card})
     }
   }
 
@@ -87,7 +140,6 @@ class DataPane extends PureComponent {
         idText = map.name;
 
         let hasGeoMessageAccess = map && map.accessLevel >= ApiManager.accessLevels.viewGeoMessages;
-
         homeElement = (
           <div>
             {map.accessLevel >= 525 ? [<Button
@@ -96,9 +148,11 @@ class DataPane extends PureComponent {
                 color='primary'
                 disabled={!hasGeoMessageAccess}
                 onClick={() => this.props.onDataPaneAction(ViewerUtility.dataPaneAction.feed)}
+                key='geoMessageFeedButton'
               >
                 {'GEOMESSAGE FEED'}
-              </Button>, <br /> ]: null}
+              </Button>, <br key='geoMessageFeedBreak'/> ]: null}
+            {this.state.totals}
             <InfoCards />
             <LegendControl
               map={this.props.map}
@@ -109,7 +163,8 @@ class DataPane extends PureComponent {
       else {
         return (
           <div className='viewer-pane data-pane' style={style}>
-            {'Please select a map first.'}
+            <CircularProgress className='loading-spinner'/>
+            <p>Data is loading, please wait.</p>
           </div>
         )
       }
