@@ -549,9 +549,6 @@ class GeoMessageControl extends PureComponent {
       clearTimeout(this.getFeedMessagesTimer);
     }
 
-    console.log(filterSettings);
-
-
     this.setState({ filterSettings: filterSettings }, () => {
       let refreshFunc = null;
 

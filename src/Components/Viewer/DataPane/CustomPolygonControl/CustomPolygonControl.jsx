@@ -212,7 +212,9 @@ class CustomPolygonControl extends PureComponent {
       for (let i = 0; i < layers.length; i++) {
         let layer = layers[i];
 
-        if (layer.restricted && this.props.map.accessLevel < ApiManager.accessLevels.addRestrictedPolygons) {
+        let filter = ['b4cfa212-9547-4d43-9119-1db5482954a3', '647c9802-f136-4029-aa6d-884396be4e9b'];
+
+        if ((layer.restricted && this.props.map.accessLevel < ApiManager.accessLevels.addRestrictedPolygons) || filter.includes(layer.id)) {
           continue;
         }
 

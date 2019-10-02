@@ -25,7 +25,9 @@ import LegendControl from './LegendControl/LegendControl';
 import AnalyseControl from './AnalyseControl/AnalyseControl';
 import GeoMessageControl from './GeoMessageControl/GeoMessageControl';
 import CustomPolygonControl from './CustomPolygonControl/CustomPolygonControl';
+
 import InfoCards from './InfoCards/InfoCards';
+import DeforestationCard from './InfoCards/DeforestationCard';
 
 import ApiManager from '../../../ApiManager';
 
@@ -35,8 +37,6 @@ class DataPane extends PureComponent {
 
     this.state = {
       home: true,
-      totals: null,
-      totalsOpen: true,
     };
   }
 
@@ -56,49 +56,6 @@ class DataPane extends PureComponent {
     if (prevProps.totals !== this.props.totals)
     {
       this.prepareTotalsCard();
-    }
-  }
-
-  prepareTotalsCard = () => {
-    let totals = this.props.totals;
-    if (Object.entries(totals).length === 0 && totals.constructor === Object)
-    {
-      this.setState({totals: <CircularProgress className='loading-spinner'/>})
-    }
-    else
-    {
-      let content = [];
-      for(let key in totals)
-      {
-        content.push(<p key={key}>{key}: {totals[key]}</p>)
-      }
-
-      let card = (<Card className='data-pane-card TotalsCard' key={'deforestation' + this.state.totalsOpen}>
-        <CardHeader
-          className='material-card-header'
-          title={
-            <Typography gutterBottom variant="h6" component="h2">
-              {'Deforestation'}
-            </Typography>
-          }
-          action={
-            <IconButton
-              className={this.state.totalsOpen ? 'expand-icon expanded' : 'expand-icon'}
-              onClick={() => {this.setState({totalsOpen: !this.state.totalsOpen}, this.prepareTotalsCard())}}
-              aria-expanded={this.props.open}
-              aria-label='Show'
-            >
-              <ExpandMoreIcon />
-            </IconButton>
-          }
-        />
-        <Collapse in={this.state.totalsOpen}>
-          <CardContent className={'card-content'} >
-            {content}
-          </CardContent>
-        </Collapse>
-      </Card>)
-      this.setState({totals: card})
     }
   }
 
@@ -152,7 +109,7 @@ class DataPane extends PureComponent {
               >
                 {'GEOMESSAGE FEED'}
               </Button>, <br key='geoMessageFeedBreak'/> ]: null}
-            {this.state.totals}
+            <DeforestationCard map={this.props.map}/>
             <InfoCards />
             <LegendControl
               map={this.props.map}

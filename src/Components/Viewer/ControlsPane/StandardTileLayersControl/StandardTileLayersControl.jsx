@@ -8,7 +8,8 @@ import {
   CardContent,
   Collapse,
   IconButton,
-  Typography
+  Typography,
+  FormControlLabel
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import SaveAlt from '@material-ui/icons/SaveAlt';
@@ -143,18 +144,19 @@ class StandardTileLayersControl extends PureComponent {
 
       let option = (
         <div key={availableLayer.name} className='layer-checkboxes'>
-          <Checkbox
-            key={availableLayer.name}
-            classes={{ root: 'layers-control-checkbox' }}
-            color='primary'
-            value={availableLayer.name}
-            name={availableLayer.name}
-            onChange={this.onLayerChange}
-            checked={checked}
+          <FormControlLabel
+            control = {
+              <Checkbox
+                key={availableLayer.name}
+                classes={{ root: 'layers-control-checkbox' }}
+                color='primary'
+                value={availableLayer.name}
+                name={availableLayer.name}
+                onChange={this.onLayerChange}
+                checked={checked}
+              />}
+            label = {availableLayer.name}
           />
-          <span>
-            {availableLayer.name}
-          </span>
           {counter}
         </div>
       )

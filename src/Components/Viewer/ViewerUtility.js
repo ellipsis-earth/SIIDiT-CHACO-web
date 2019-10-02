@@ -91,8 +91,8 @@ const ViewerUtility = {
   createGeoJsonLayerStyle: (color, weight, fillOpacity) => {
     return {
       color: color ? color : '#3388ff',
-      weight: weight ? weight : 1,
-      fillOpacity: fillOpacity ? fillOpacity : 0.06
+      weight: weight || weight === 0 ? weight : 1,
+      fillOpacity: fillOpacity || fillOpacity === 0 ? fillOpacity : 0.06
     };
   },
 

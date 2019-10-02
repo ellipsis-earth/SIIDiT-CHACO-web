@@ -8,7 +8,8 @@ import {
   CardContent,
   Collapse,
   IconButton,
-  Typography
+  Typography,
+  FormControlLabel
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import SaveAlt from '@material-ui/icons/SaveAlt';
@@ -39,6 +40,10 @@ class PolygonLayersControl extends PureComponent {
 
       count: {}
     };
+
+    this.filterDeforestatcion = ["f141f4b3-4caa-4654-9d37-61dcf4a3cd6d", "1336d0d0-502c-4736-b76f-2d5122f7c3e8"];
+    this.filterDetectada = ["b4cfa212-9547-4d43-9119-1db5482954a3", "647c9802-f136-4029-aa6d-884396be4e9b"];
+
   }
 
   componentDidMount() {
@@ -104,13 +109,17 @@ class PolygonLayersControl extends PureComponent {
   }
 
   createLayerCheckboxes = () => {
-    let options = [];
+    let options = [
+      [<h3 key='Capas Detectada'>Capas Detectada</h3>, []],
+      [<h3 key='Capas de Deforestacion'>Capas de Deforestacion</h3>, []],
+      [<h3 key='Capas de Información'>Capas de Información</h3>, []],
+    ];
 
     let availableLayers = this.state.availableLayers;
     let selectedLayers = this.state.selectedLayers;
 
-    for (let i = 0; i < availableLayers.length; i++) {
-
+    for (let i = 0; i < availableLayers.length; i++)
+    {
       let availableLayer = availableLayers[i];
       let checked = selectedLayers.find(x => x === availableLayer) ? true : false;
 
@@ -145,30 +154,79 @@ class PolygonLayersControl extends PureComponent {
 
       let option = (
         <div key={availableLayer.name} className='layer-checkboxes'>
-          <Checkbox
-            key={availableLayer.name}
-            classes={{ root: 'layers-control-checkbox' }}
-            color='primary'
-            value={availableLayer.name}
-            name={availableLayer.name}
-            onChange={this.onLayerChange}
-            checked={checked}
+          <FormControlLabel
+            control = {
+              <Checkbox
+                key={availableLayer.name}
+                classes={{ root: 'layers-control-checkbox' }}
+                color='primary'
+                value={availableLayer.name}
+                name={availableLayer.name}
+                onChange={this.onLayerChange}
+                checked={checked}
+              /> }
+            label={availableLayer.name}
           />
-          <span>
-            {availableLayer.name}
-          </span>
           {counter}
         </div>
       )
 
-      options.push(option);
+      if (this.filterDetectada.includes(availableLayer.id))
+      {
+        options[0][1].push(option)
+      }
+      else if (this.filterDeforestatcion.includes(availableLayer.id))
+      {
+        options[1][1].push(option)
+      }
+      else
+      {
+        options[2][1].push(option)
+      }
     }
 
     return options;
   }
 
+  sortLayers = (availableLayers) => {
+    let border = 2;
+
+    availableLayers = JSON.parse(JSON.stringify(availableLayers));
+    let filter = [...(JSON.parse(JSON.stringify(this.filterDetectada))), ...(JSON.parse(JSON.stringify(this.filterDeforestatcion)))]
+
+    availableLayers.sort((a,b) => {
+      if (filter.includes(a.id) && filter.includes(b.id))
+      {
+        if (this.filterDetectada.includes(a.id) && this.filterDetectada.includes(b.id))
+        {
+          return 0;
+        }
+        else if(this.filterDetectada.includes(b.id))
+        {
+          return -1;
+        }
+        else if(this.filterDetectada.includes(a.id))
+        {
+          return 1;
+        }
+      }
+      else if(filter.includes(b.id))
+      {
+        return -1;
+      }
+      else if(filter.includes(a.id))
+      {
+        return 1;
+      }
+    });
+
+    return availableLayers;
+  }
+
   prepareLayers = async (map, timestampRange, availableLayers, selectedLayers) => {
     let promises = [];
+
+    availableLayers = this.sortLayers(availableLayers);
 
     for (let i = 0; i < availableLayers.length; i++) {
 
@@ -229,7 +287,7 @@ class PolygonLayersControl extends PureComponent {
             <GeoJSON
               key={Math.random()}
               data={polygonsGeoJson}
-              style={ViewerUtility.createGeoJsonLayerStyle(`#${polygonLayer.color}`)}
+              style={ViewerUtility.createGeoJsonLayerStyle(`#${polygonLayer.color}`, null, 0)}
               zIndex={ViewerUtility.polygonLayerZIndex + i}
               onEachFeature={(feature, layer) => layer.on({ click: () => this.onFeatureClick(feature, polygonLayer.hasAggregatedData) })}
             />

@@ -3,3 +3,10 @@
 	text-align: left;
 	margin-top: 0;
 }
+
+.data-pane-card .loading-spinner
+{
+	position: relative;
+	top: 0;
+	left: 5px;
+}
