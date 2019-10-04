@@ -12,7 +12,6 @@
   text-align: left;
   font-size: 12pt;
   margin-top: 18px;
-  /* border: 1px solid black; */
 }
 
 .layer-checkboxes {
@@ -23,11 +22,6 @@ span.layers-control-checkbox {
   padding: 5px;
   align-self: flex-start;
 }
-
-/*.layer-checkboxes .MuiFormControlLabel-label
-{
-  padding-top: 5px;
-}*/
 
 div.material-card-header {
   padding-bottom: 6px;

@@ -115,6 +115,7 @@ class ControlsPane extends PureComponent {
           override={this.props.override}
           onLayersChange={(layers) => this.onLayersChange(ViewerUtility.polygonLayerType, layers)}
           onFeatureClick={(feature, hasAggregatedData) => this.props.onFeatureClick(ViewerUtility.polygonLayerType, feature, hasAggregatedData)}
+          getLayerInfoContent={this.props.getLayerInfoContent}
         />
 
         <StandardTileLayersControl

@@ -22,6 +22,8 @@ import { Button } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
 import Control from 'react-leaflet-control';
 
+import { LayerInfoCard } from './ControlsPane/PolygonLayersControl/LayerInfo/LayerInfo';
+
 
 import './Viewer.css';
 
@@ -90,6 +92,8 @@ class Viewer extends PureComponent {
 
       filterData: {},
       totals: {},
+
+      layerInfoContent: [],
     };
   }
 
@@ -585,6 +589,10 @@ class Viewer extends PureComponent {
     }
   }
 
+  getLayerInfoContent = (content) => {
+    this.setState({layerInfoContent: content});
+  }
+
   render() {
     let mapPaneStyle = {
       display: 'block',
@@ -622,6 +630,7 @@ class Viewer extends PureComponent {
             onFeatureClick={this.selectFeature}
             onFlyTo={this.onFlyTo}
             onDeselect={this.deselectCurrentElement}
+            getLayerInfoContent={this.getLayerInfoContent}
           />
 
           <div className='viewer-pane map-pane' style={mapPaneStyle}>
@@ -651,6 +660,7 @@ class Viewer extends PureComponent {
               </Control>
               {this.state.allLayers}
               {this.state.geolocation ? <Marker position={this.state.geolocation}/> : null}
+              <LayerInfoCard content={this.state.layerInfoContent.content} random={this.state.layerInfoContent.random}/>
             </Map>
           </div>
 

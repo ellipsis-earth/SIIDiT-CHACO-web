@@ -17,6 +17,7 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Utility from '../../../../Utility';
 import ViewerUtility from '../../ViewerUtility';
 
+import LayerInfoButton from './LayerInfo/LayerInfo';
 import './PolygonLayersControl.css';
 
 import ApiManager from '../../../../ApiManager';
@@ -165,7 +166,9 @@ class PolygonLayersControl extends PureComponent {
                 onChange={this.onLayerChange}
                 checked={checked}
               /> }
-            label={availableLayer.name}
+            label={[
+              <p className='layerLabel'>{availableLayer.name}</p>, 
+              <LayerInfoButton key={'LayerInfo_' + availableLayer.name} id={availableLayer.id} getLayerInfoContent={this.props.getLayerInfoContent}/>]}
           />
           {counter}
         </div>

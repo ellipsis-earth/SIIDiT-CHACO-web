@@ -18,3 +18,13 @@
 {
 	text-align: center;
 }
+
+.layers-contol .hidden
+{
+	display: none;
+}
+
+.layers-contol .layerInfo
+{
+	position: absolute;
+}

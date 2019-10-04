@@ -1,0 +1,45 @@
+.layerInfoCard
+{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	z-index: 9000;
+	margin: 1em;
+	max-width: 25em;
+}
+
+.layerInfoCard h1
+{
+	font-size: 0.85em;
+}
+
+.layerInfoCard p
+{
+	margin-top: 0;
+}
+
+
+.layerInfoCard.hidden
+{
+	display: none;
+}
+
+.LayerInfoButton
+{
+	width: fit-content;
+	position: absolute;
+	top: 0;
+	right: 0;
+
+}
+
+.LayerInfoButton button
+{
+	padding: 6px;
+}
+
+p.layerLabel
+{
+	margin: 0;
+	padding-right: 16px;
+}
