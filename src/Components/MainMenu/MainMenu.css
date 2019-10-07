@@ -3,7 +3,8 @@
   padding-left: 70px;
   padding-right: 70px;
   z-index: 9000;
-  background-color: #026464;
+  background-color: white;
+  box-shadow: 0px -5px 5px 5px #00000040;
 }
 
 .main-menu .navbar {
@@ -29,14 +30,17 @@
   text-decoration: none;
   border: 0px;
   border-radius: 0px;
+  color: #7c9c1e;
 }
 
-.navbar-nav button.MuiToggleButton-root:hover {
-  background-color: #037d7d;
+.navbar-collapse
+{
+  justify-content: flex-end;
 }
 
-.navbar-nav button.MuiToggleButton-root.Mui-selected {
-  background-color: #024b4b;
+.navbar-nav button.MuiToggleButton-root:hover, .navbar-nav button.MuiToggleButton-root.Mui-selected {
+  background-color: #7c9c1e;
+  color: white;
 }
 
 .main-menu .nav-item {

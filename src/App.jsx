@@ -24,7 +24,7 @@ const localStorageUserItem = 'user';
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#026464'
+      main: '#7c9c1e'
     },
     secondary: {
       main: '#f5f5f5'
@@ -38,7 +38,7 @@ class App extends Component {
 
   constructor(props, context) {
     super(props, context)
-    document.title = 'Ellipsis Earth Intelligence';
+    document.title = 'SIIDiT - CHACO';
 
     this.topItemRef = React.createRef();
     this.bottomItemRef = React.createRef();

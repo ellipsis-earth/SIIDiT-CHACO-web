@@ -65,16 +65,16 @@ class DeforestationCard extends PureComponent {
       for (let k = 0; k < results.length; k++)
       {
         let element = results[k];
-        Array.isArray(layerIdFilter[element.type]) ? layerIdFilter[element.type].push(element.elementId) : layerIdFilter[element.type] = [element.elementId]
-        total[layers[i].name] = total[layers[i].name] ? total[layers[i].name] + element.form.answers[0].answer : element.form.answers[0].answer;
-        if(k === results.length - 1)
+        total[layers[i].name] = total[layers[i].name] ? parseFloat(total[layers[i].name]) + parseFloat(element.form.answers[0].answer) : parseFloat(element.form.answers[0].answer);
+        if(k === results.length - 1 && total[layers[i].name])
         {
-          total[layers[i].name] = total[layers[i].name].toFixed(2);
+          total[layers[i].name] = parseFloat(total[layers[i].name]).toFixed(2);
         }
       }
     }
 
-    this.prepareTotalsCard({ids: layerIdFilter, totals: total});
+    this.props.setTotals({totals: total});
+    this.prepareTotalsCard({totals: total});
   }
 
   prepareTotalsCard = (filterData) => {
@@ -83,7 +83,6 @@ class DeforestationCard extends PureComponent {
     if (filterData)
     {
       let totals = filterData.totals;
-      
 
       for(let key in totals)
       {
@@ -95,7 +94,9 @@ class DeforestationCard extends PureComponent {
   }
 
   componentDidMount = () => {
-    let filterData = this.prepareFilterData(this.props.map, [
+    if (this.props.totals === -1)
+    {
+      let filterData = this.prepareFilterData(this.props.map, [
       {
         name: 'deforestation',
         layerID: 'b4cfa212-9547-4d43-9119-1db5482954a3',
@@ -107,8 +108,12 @@ class DeforestationCard extends PureComponent {
         layerID: "647c9802-f136-4029-aa6d-884396be4e9b",
         formID: '0ef01ab2-9d01-11e9-baf8-42010a840021',
         types: ['polygon'],
-      }
-    ]);
+      }]);
+    }
+    else
+    {
+      this.prepareTotalsCard(this.props.totals);
+    }  
   }
 
   render = () => {

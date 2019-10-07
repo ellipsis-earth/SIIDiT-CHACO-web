@@ -91,7 +91,7 @@ class Viewer extends PureComponent {
       overrideLeafletLayers: null,
 
       filterData: {},
-      totals: {},
+      totals: -1,
 
       layerInfoContent: [],
     };
@@ -419,7 +419,7 @@ class Viewer extends PureComponent {
   }
 
   onDataPaneAction = (action, jumpToMessage) => {
-     console.log(`On data pane action: ${action} ${jumpToMessage}`);
+     //console.log(`On data pane action: ${action} ${jumpToMessage}`);
 
     let cb = () => {
       this.openPane(DATA_PANE_NAME);
@@ -593,6 +593,10 @@ class Viewer extends PureComponent {
     this.setState({layerInfoContent: content});
   }
 
+  setTotals = (totals) => {
+    this.setState({totals: totals})
+  }
+
   render() {
     let mapPaneStyle = {
       display: 'block',
@@ -681,6 +685,7 @@ class Viewer extends PureComponent {
             onLayersChange={this.onLayersChange}
             onFeatureClick={this.selectFeature}
             totals={this.state.totals}
+            setTotals={this.setTotals}
           />
         </div>
 

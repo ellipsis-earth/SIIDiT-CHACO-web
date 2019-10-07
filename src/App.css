@@ -53,7 +53,7 @@
 }
 
 .main-block-accented {
-  background-color: #00a3a3;
+  background-color: #7c9c1e;
   color: #ffffff;
 }
 
@@ -74,7 +74,7 @@
 }
 
 .main-block-header {
-  background-color: #026464;
+  background-color: #7c9c1e;
   padding: 0.3em 0em;
   margin-bottom: 2em;
 
@@ -118,19 +118,19 @@
 .main-block-button {
   width: 100%;
   height: 45px;
-  border: 3px solid #026464;
+  border: 3px solid #7c9c1e;
   border-radius: 0px;
 }
 
 .main-block-button-container .main-block-button {
   width: 100%;
   height: 45px;
-  border: 1px solid #026464;
+  border: 1px solid #7c9c1e;
   border-radius: 0px;
 }
 
 .main-block-button-container .main-block-button:hover {
-  border: 1px solid #026464;
+  border: 1px solid #7c9c1e;
 }
 
 .main-block-single-button {
@@ -153,7 +153,7 @@
 }
 
 .key-words {
-  color: #026464;
+  color: #7c9c1e;
   font-style: italic;
   font-weight: bold;
 }
@@ -166,8 +166,8 @@ button:focus {
   padding: 0.5em 1em;
   text-align: center;
   background-color: #ffffff;
-  color: #00a3a3;
-  border: 3px solid #026464;
+  color: #7c9c1e;
+  border: 3px solid #7c9c1e;
   text-decoration: none;
   font-weight: bold;
 
@@ -184,17 +184,17 @@ button:focus {
 }
 
 button.button-selected {
-  background-color: #00a3a3;
+  background-color: #7c9c1e;
   color: #ffffff;
 }
 
 .button:hover {
-  background-color: #00a3a3;
+  background-color: #7c9c1e;
   color: #ffffff;
 }
 
 .button:hover:enabled {
-    background-color: #00a3a3;
+    background-color: #7c9c1e;
     color: #ffffff;
 }
 
@@ -203,13 +203,13 @@ button.button-selected {
 }
 
 .button-accented {
-  border: 3px solid #026464;
+  border: 3px solid #7c9c1e;
   background-color: #ffffff;
-  color: #00a3a3
+  color: #7c9c1e
 }
 
 .button-accented:hover:enabled {
-  background-color: #00a3a3;
+  background-color: #7c9c1e;
   color: #ffffff
 }
 

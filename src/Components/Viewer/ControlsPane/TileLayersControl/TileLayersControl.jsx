@@ -259,8 +259,10 @@ class TileLayersControl extends PureComponent {
             leafletTileLayersGrouped.push(leafletTileLayersGroup);
           }
 
+          let version = 'v1'
+
           let key = `${map.id}_${mapTimestamp.timestampNumber}_${tileLayer.type}_${tileLayer.name}`;
-          let url = `${ApiManager.apiUrl}/tileService/${map.id}/${mapTimestamp.timestampNumber}/${tileLayer.name}/{z}/{x}/{y}`;
+          let url = `${ApiManager.apiUrl}${version}/tileService/${map.id}/${mapTimestamp.timestampNumber}/${tileLayer.name}/{z}/{x}/{y}`;
           let zIndex = tileLayerType.zIndex + leafletTileLayersGroup.zIndexOffset + leafletTileLayersGroup.leafletTileLayers.length;
 
           if (this.props.user) {

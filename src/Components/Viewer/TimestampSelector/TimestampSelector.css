@@ -14,13 +14,13 @@
 
 
 .timestamp-selector span.MuiSlider-root {
-  color: #027777;
+  color: #7c9c1e;
   height: 6px;
 }
 
 .timestamp-selector span.MuiSlider-rail {
   height: 6px;
-  background-color: #026464;
+  background-color: #7c9c1e;
 }
 
 .timestamp-selector span.MuiSlider-track {
@@ -37,10 +37,14 @@
 }
 
 .timestamp-selector span.MuiSlider-mark {
-  background-color: #039e9e;
+  background-color: #7c9c1e;
   height: 8px;
   width: 1px;
   margin-top: -1px;
+}
+
+input#timestamp-range {
+  margin-right: 0.25em;
 }
 
 /* .time-range-selector {

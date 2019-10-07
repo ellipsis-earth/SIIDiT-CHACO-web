@@ -45,6 +45,16 @@ class PolygonLayersControl extends PureComponent {
     this.filterDeforestatcion = ["f141f4b3-4caa-4654-9d37-61dcf4a3cd6d", "1336d0d0-502c-4736-b76f-2d5122f7c3e8"];
     this.filterDetectada = ["b4cfa212-9547-4d43-9119-1db5482954a3", "647c9802-f136-4029-aa6d-884396be4e9b"];
 
+    this.filterProps = {
+      "b4cfa212-9547-4d43-9119-1db5482954a3": {
+        type: 'tile',
+        formID: '5fd5ebe0-9d02-11e9-baf8-42010a840021',
+      },
+      "647c9802-f136-4029-aa6d-884396be4e9b" : {
+        type: 'polygon',
+        formID: '0ef01ab2-9d01-11e9-baf8-42010a840021',
+      }
+    };
   }
 
   componentDidMount() {
@@ -167,7 +177,7 @@ class PolygonLayersControl extends PureComponent {
                 checked={checked}
               /> }
             label={[
-              <p className='layerLabel'>{availableLayer.name}</p>, 
+              <p className='layerLabel' key={availableLayer.name}>{availableLayer.name}</p>, 
               <LayerInfoButton key={'LayerInfo_' + availableLayer.name} id={availableLayer.id} getLayerInfoContent={this.props.getLayerInfoContent}/>]}
           />
           {counter}
@@ -226,6 +236,42 @@ class PolygonLayersControl extends PureComponent {
     return availableLayers;
   }
 
+  getIds = (map, timestampRange, polygonLayer, bounds, filter) => {
+    let body = {
+      mapId: map.id,
+      limit: MAX_POLYGONS
+    };
+
+    if (filter)
+    {
+      body.type = filter.type;
+      body.filters = {
+        forms: [map.forms.find(x => x.uuid === filter.formID).formName],
+        bounds: {
+          xMin: bounds.xMin,
+          xMax: bounds.xMax,
+          yMin: bounds.yMin,
+          yMax: bounds.yMax,
+        }
+      }
+
+      return ApiManager.post('/geoMessage/ids', body, this.props.user, 'v2')
+    }
+    else
+    {
+      body.timestamp = map.timestamps[timestampRange.end].timestampNumber;
+      body.layer = polygonLayer.name;
+      body.xMin = bounds.xMin;
+      body.xMax = bounds.xMax;
+      body.yMin = bounds.yMin;
+      body.yMax = bounds.yMax;
+      body.zoom = map.zoom;
+
+      return ApiManager.post('/metadata/polygons', body, this.props.user)
+    }
+
+  }
+
   prepareLayers = async (map, timestampRange, availableLayers, selectedLayers) => {
     let promises = [];
 
@@ -241,19 +287,16 @@ class PolygonLayersControl extends PureComponent {
 
       let bounds = this.props.leafletMapViewport.bounds;
 
-      let body = {
-        mapId: map.id,
-        timestamp: map.timestamps[timestampRange.end].timestampNumber,
-        layer: polygonLayer.name,
-        xMin: bounds.xMin,
-        xMax: bounds.xMax,
-        yMin: bounds.yMin,
-        yMax: bounds.yMax,
-        zoom: map.zoom,
-        limit: MAX_POLYGONS
+      let filter = null;
+      let type = 'polygon';
+
+      if (this.filterDetectada.includes(polygonLayer.id))
+      {
+        filter = this.filterProps[polygonLayer.id]
+        type = filter.type;
       }
 
-      let leafletGeojsonLayerPromise = ApiManager.post('/metadata/polygons', body, this.props.user)
+      let leafletGeojsonLayerPromise = this.getIds(map, timestampRange, polygonLayer, bounds, filter)
         .then(polygonIds => {
           let count = {
             ...this.state.count,
@@ -267,13 +310,28 @@ class PolygonLayersControl extends PureComponent {
             return null;
           }
 
-          body = {
+          let body = {
             mapId: map.id,
             timestamp: map.timestamps[timestampRange.end].timestampNumber,
-            polygonIds: polygonIds.ids
           }
 
-          return ApiManager.post('/geometry/polygons', body, this.props.user);
+          if (filter)
+          {
+            if (type === 'polygon')
+            {
+              body['polygonIds'] = polygonIds.messages.map(x => {return x.elementId})
+            }
+            else
+            {
+              body['tileIds'] = polygonIds.messages.map(x => {return x.elementId})
+            }
+          }
+          else
+          {
+            body['polygonIds'] = polygonIds.ids
+          }
+
+          return ApiManager.post(('/geometry/' + type + 's'), body, this.props.user);
         })
         .then(polygonsGeoJson => {
           if (!polygonsGeoJson) {

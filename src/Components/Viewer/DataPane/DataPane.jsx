@@ -52,11 +52,6 @@ class DataPane extends PureComponent {
     else if (prevProps.action && !this.props.action && !this.state.home) {
       this.setState({ home: true });
     }
-
-    if (prevProps.totals !== this.props.totals)
-    {
-      this.prepareTotalsCard();
-    }
   }
 
   goToAction = () => {
@@ -109,7 +104,7 @@ class DataPane extends PureComponent {
               >
                 {'GEOMESSAGE FEED'}
               </Button>, <br key='geoMessageFeedBreak'/> ]: null}
-            <DeforestationCard map={this.props.map}/>
+            <DeforestationCard map={this.props.map} totals={this.props.totals} setTotals={this.props.setTotals}/>
             <InfoCards />
             <LegendControl
               map={this.props.map}

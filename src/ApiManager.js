@@ -1,4 +1,4 @@
-const apiUrl = 'https://api.ellipsis-earth.com/v1';
+const apiUrl = 'https://api.ellipsis-earth.com/';
 // const apiUrl = 'https://dev.api.ellipsis-earth.com/v1';
 // const apiUrl = 'http://localhost:7552/v1';
 
@@ -32,21 +32,21 @@ const ApiManager = {
     max: 1000
   },
 
-  get: (url, body, user) => {
-    return apiManagerFetch('GET', url, body, user);
+  get: (url, body, user, version = 'v1') => {
+    return apiManagerFetch('GET', url, body, user, version);
   },
 
-  post: (url, body, user) => {
-    return apiManagerFetch('POST', url, body, user);
+  post: (url, body, user, version = 'v1') => {
+    return apiManagerFetch('POST', url, body, user, version);
   },
 
-  fetch: (method, url, body, user) => {
-    return apiManagerFetch(method, url, body, user);
+  fetch: (method, url, body, user, version = 'v1') => {
+    return apiManagerFetch(method, url, body, user, version);
   }
 };
 
-async function apiManagerFetch(method, url, body, user) {
-  url = `${apiUrl}${url}`;
+async function apiManagerFetch(method, url, body, user, version) {
+  url = `${apiUrl}${version}${url}`;
   let headers = {};
 
   if (body) {
