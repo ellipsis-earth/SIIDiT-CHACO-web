@@ -99,7 +99,7 @@ export class MainMenu extends Component {
       <div id='main-menu' style={displayStyle}>
         <Navbar
           className={this.state.expanded ? 'main-menu' : 'main-menu main-menu-collapsed'}
-          variant='dark'
+          variant='light'
           expand='md'
           expanded={this.state.expanded}
           onToggle={this.onToggle}
@@ -109,6 +109,7 @@ export class MainMenu extends Component {
               <img className='main-menu-logo' src='/images/logos/logo_horizontal.svg' alt='SIIDiT - CHACO'/>
             </NavLink>
           </Navbar.Brand>
+          <Navbar.Toggle aria-controls='basic-navbar-nav' style={{ height: '45px' }} />
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav>
               <NavItem>
