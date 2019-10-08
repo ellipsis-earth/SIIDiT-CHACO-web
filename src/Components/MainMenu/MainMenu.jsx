@@ -114,7 +114,7 @@ export class MainMenu extends Component {
               <NavItem>
                 <NavLink to={this.props.user ? '/account': '/login'} onClick={() => this.onNavItemClick(navKeys.login)}>
                   <ToggleButton selected={navItemClass(navKeys.login)} value={this.props.user ? this.props.user.username : 'Login'}>
-                    {this.props.user ? this.props.user.username : 'Login'}
+                    {this.props.user ? this.props.user.username : 'Iniciar'}
                   </ToggleButton>
                 </NavLink>
               </NavItem>

@@ -177,7 +177,7 @@ class PolygonLayersControl extends PureComponent {
                 checked={checked}
               /> }
             label={[
-              <p className='layerLabel' key={availableLayer.name}>{availableLayer.name}</p>, 
+              <p className='layerLabel' key={availableLayer.name}>{availableLayer.name}</p>,
               <LayerInfoButton key={'LayerInfo_' + availableLayer.name} id={availableLayer.id} getLayerInfoContent={this.props.getLayerInfoContent}/>]}
           />
           {counter}
@@ -443,7 +443,7 @@ class PolygonLayersControl extends PureComponent {
           className='material-card-header'
           title={
             <Typography gutterBottom variant="h6" component="h2">
-              {'Polygons'}
+              {'Polígonos'}
             </Typography>
           }
           action={

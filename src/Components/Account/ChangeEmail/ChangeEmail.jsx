@@ -50,18 +50,18 @@ class ChangeEmail extends PureComponent {
     return (
       <div className='login-block'>
         <h1 className='account-title'>
-          {'Change Email'}
+          {'Cambiar e-mail'}
         </h1>
         {
           this.state.success ?
           <div className='main-content'>
-            <h2>{"Success"}</h2>
+            <h2>{"Éxito"}</h2>
             <p>
-              {"We have sent you an email to validate your email address. Please follow the procedures in the mail."}
+              {"Le hemos enviado un correo electrónico para validar su dirección de correo electrónico. Por favor, siga los procedimientos en el correo."}
             </p>
             <div>
               <NavLink to='/account/management' style={{fontSize: '12pt'}}>
-                {'Account Management'}
+                {'Administración de cuentas'}
               </NavLink>
             </div>
           </div>
@@ -69,7 +69,7 @@ class ChangeEmail extends PureComponent {
           <form>
             <div className='login-input-label-div'>
               <div>
-                {'New Email'}
+                {'Nuevo e-mail'}
               </div>
               <div>
                 <input className='login-input' type='email' tabIndex={0} ref='newEmailInput'></input>
@@ -78,7 +78,7 @@ class ChangeEmail extends PureComponent {
 
             <div className='login-input-label-div' onClick={this.changeEmail.bind(this)} onKeyUp={this.onEnter.bind(this)}>
               <div className='button main-block-single-button' tabIndex={0}>
-                {'Change Email'}
+                {'Cambiar e-mail'}
               </div>
             </div>
           </form>

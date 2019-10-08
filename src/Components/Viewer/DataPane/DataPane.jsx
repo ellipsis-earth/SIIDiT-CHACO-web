@@ -85,7 +85,7 @@ class DataPane extends PureComponent {
     let actionControl = null;
 
     if (home) {
-      title = 'Map';
+      title = 'Mapa';
       let map = this.props.map;
 
       if (map) {
@@ -102,7 +102,7 @@ class DataPane extends PureComponent {
                 onClick={() => this.props.onDataPaneAction(ViewerUtility.dataPaneAction.feed)}
                 key='geoMessageFeedButton'
               >
-                {'GEOMESSAGE FEED'}
+                {'MENSAJES'}
               </Button>, <br key='geoMessageFeedBreak'/> ]: null}
             <DeforestationCard map={this.props.map} totals={this.props.totals} setTotals={this.props.setTotals}/>
             <InfoCards />
@@ -122,7 +122,7 @@ class DataPane extends PureComponent {
       }
     }
     else if (action === ViewerUtility.dataPaneAction.feed) {
-      title = 'GeoMessage Feed';
+      title = 'MENSAJES';
       idText = this.props.map.name;
     }
     else if (element) {

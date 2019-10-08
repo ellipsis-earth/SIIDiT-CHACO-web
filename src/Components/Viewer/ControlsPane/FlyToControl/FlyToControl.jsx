@@ -126,7 +126,7 @@ class FlyToControl extends PureComponent {
       elementIdInput = (
         <div>
           <TextField
-            label={'Polygon id'}
+            label={'Polígono id'}
             type='number'
             value={this.state.elementId}
             required={true}
@@ -143,7 +143,7 @@ class FlyToControl extends PureComponent {
           className='material-card-header'
           title={
             <Typography gutterBottom variant="h6" component="h2">
-              {'Fly to'}
+              {'Volar a'}
             </Typography>
           }
           action={
@@ -167,10 +167,9 @@ class FlyToControl extends PureComponent {
               onChange={this.onSelectFlyTo}
               value={this.state.selectedFlyToType}
             >
-               <MenuItem value={ViewerUtility.flyToType.map}>Current map</MenuItem>
-               <MenuItem value={ViewerUtility.flyToType.currentLocation}>My location</MenuItem>
-               <MenuItem value={ViewerUtility.flyToType.standardTile}>Standard tile</MenuItem>
-               <MenuItem value={ViewerUtility.flyToType.polygon}>Polygon</MenuItem>
+               <MenuItem value={ViewerUtility.flyToType.currentLocation}>Mi ubicacion</MenuItem>
+               <MenuItem value={ViewerUtility.flyToType.standardTile}>Teja</MenuItem>
+               <MenuItem value={ViewerUtility.flyToType.polygon}>Polígono</MenuItem>
             </Select>
             {elementIdInput}
           </CardContent>
@@ -180,7 +179,7 @@ class FlyToControl extends PureComponent {
               color='primary'
               onClick={this.onFlyTo}
             >
-              {'Fly to'}
+              {'Volar a'}
             </Button>
           </CardActions>
         </Collapse>

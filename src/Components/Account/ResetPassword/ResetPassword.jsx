@@ -44,21 +44,21 @@ class ResetPassword extends PureComponent {
     return (
       <div className="login-block">
         <h1 className='account-title'>
-          {"Reset your password"}
+          {"Restablecer su contraseña"}
         </h1>
         {
           this.state.success ?
           <div className='main-content'>
-            <h2>{"Success"}</h2>
+            <h2>{"Éxito"}</h2>
             <p>
-              {"We have sent an email to the given email address."}
+              {"Hemos enviado un correo electrónico a la dirección de correo electrónico especificada."}
             </p>
             <p>
-              {"Please follow the procedure in the email to continue."}
+              {"Siga el procedimiento en el correo electrónico para continuar."}
             </p>
             <div>
               <NavLink to='/login' style={{fontSize: '12pt'}}>
-                {"Login"}
+                {"Iniciar"}
               </NavLink>
             </div>
           </div>
@@ -66,7 +66,7 @@ class ResetPassword extends PureComponent {
           <form>
             <div className='login-input-label-div'>
               <div>
-                {"Email"}
+                {"E-mail"}
               </div>
               <div>
                 <input className='login-input' type='email' tabIndex={0} ref='emailInput'></input>
@@ -74,7 +74,7 @@ class ResetPassword extends PureComponent {
             </div>
             <div className='login-input-label-div' onClick={this.resetPassword.bind(this)} onKeyUp={this.onEnter.bind(this)}>
               <div className="button main-block-single-button" tabIndex={0}>
-                {"Reset Password"}
+                {"Restablecer la contraseña"}
               </div>
             </div>
           </form>

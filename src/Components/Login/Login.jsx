@@ -58,12 +58,12 @@ class Login extends PureComponent {
       <div>
         <div className='main-content'>
           <h1 className='account-title'>
-            {'Login'}
+            {'Iniciar'}
           </h1>
           <form>
             <div className='login-input-label-div'>
               <div>
-                {'Username'}
+                {'Nombre de usuario'}
               </div>
               <div>
                 <input className='login-input' tabIndex={0} ref='usernameInput'></input>
@@ -71,7 +71,7 @@ class Login extends PureComponent {
             </div>
             <div className='login-input-label-div'>
               <div>
-                {'Password'}
+                {'Contraseña'}
               </div>
               <div>
                 <input className='login-input' tabIndex={0} type='password' ref='passwordInput' onKeyUp={this.onEnter.bind(this)}></input>
@@ -79,18 +79,18 @@ class Login extends PureComponent {
             </div>
             <div className='login-input-label-div' onClick={this.login.bind(this)} onKeyUp={this.onEnter.bind(this)}>
               <div className="button main-block-single-button" tabIndex={0}>
-                {'Login'}
+                {'Iniciar'}
               </div>
             </div>
           </form>
           <div>
             <NavLink to='/account/register' style={{fontSize: '12pt'}}>
-              {'Sign up'}
+              {'Regístrate'}
             </NavLink>
           </div>
           <div>
             <NavLink to='/account/resetPassword' style={{fontSize: '12pt'}}>
-              {'Forgot your password or username?'}
+              {'¿Olvidaste tu contraseña o nombre de usuario?'}
             </NavLink>
           </div>
         </div>

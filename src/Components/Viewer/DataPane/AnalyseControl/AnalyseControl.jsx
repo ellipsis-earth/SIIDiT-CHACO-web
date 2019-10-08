@@ -318,7 +318,7 @@ class AnalyseControl extends PureComponent {
       <div>
         <Card className='data-pane-card'>
           <CardContent>
-            <div>{'Maximum allowed cloud cover'}: {Math.round(this.state.maxMask * 100)}%</div>
+            <div>{'Capa de nubes maxiumum'}: {Math.round(this.state.maxMask * 100)}%</div>
             <Slider
               step={0.01}
               value={this.state.maxMask}
@@ -333,7 +333,7 @@ class AnalyseControl extends PureComponent {
           <CardHeader
             title={
               <Typography variant="h6" component="h2" className='no-text-transform'>
-                {'Classes'}
+                {'Clases'}
               </Typography>
             }
             action={
@@ -365,7 +365,7 @@ class AnalyseControl extends PureComponent {
                 <CardActions className='analyse-card-actions'>
                   <IconButton
                     onClick={() => this.onDownloadData(false)}
-                    aria-label='Download data'
+                    aria-label='Descargar'
                   >
                     <SaveAlt />
                   </IconButton>
@@ -377,7 +377,7 @@ class AnalyseControl extends PureComponent {
           <CardHeader
             title={
               <Typography variant="h6" component="h2" className='no-text-transform'>
-                {'Measurements'}
+                {'Mediciones'}
               </Typography>
             }
             action={
@@ -400,7 +400,7 @@ class AnalyseControl extends PureComponent {
                     value={this.state.selectedClass}
                     onChange={this.onSelectClass}
                     disabled={this.state.measurementsLoading}>
-                    <MenuItem value={DEFAULT_SELECTED_CLASS} disabled hidden>{'Select a class'}</MenuItem>
+                    <MenuItem value={'DEFAULT_SELECTED_CLASS'} disabled hidden>{'Select a class'}</MenuItem>
                     {this.renderClassOptions()}
                   </Select> : null
               }

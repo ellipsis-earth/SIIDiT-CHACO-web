@@ -158,7 +158,7 @@ class SelectionPane extends PureComponent {
         onClick={() => this.onElementActionClick(ViewerUtility.dataPaneAction.analyse)}
         disabled={mapAccessLevel < ApiManager.accessLevels.aggregatedData}
       >
-        {'ANALYSE'}
+        {'ANALIZAR'}
       </Button>
     );
 
@@ -172,16 +172,16 @@ class SelectionPane extends PureComponent {
           onClick={() => this.onElementActionClick(ViewerUtility.dataPaneAction.geoMessage)}
           disabled={mapAccessLevel < ApiManager.accessLevels.viewGeoMessages}
         >
-        {'GeoMessage'}
+        {'MENSAJE'}
         </Button>
       ));
     }
 
     if (element.type === ViewerUtility.standardTileLayerType) {
-      title = 'Standard tile';
+      title = 'Teja';
     }
     else if (element.type === ViewerUtility.polygonLayerType) {
-      title = 'Polygon';
+      title = 'Polígono';
 
       let canEdit = user &&
         (mapAccessLevel > ApiManager.accessLevels.alterOrDeleteCustomPolygons ||
@@ -198,7 +198,7 @@ class SelectionPane extends PureComponent {
             onClick={() => this.onElementActionClick(ViewerUtility.dataPaneAction.editCustomPolygon)}
             disabled={!canEdit}
           >
-            {'EDIT'}
+            {'EDITAR'}
           </Button>,
           <Button
             key='delete'
@@ -208,9 +208,9 @@ class SelectionPane extends PureComponent {
             onClick={() => this.onElementActionClick(DELETE_CUSTOM_POLYGON_ACTION)}
             disabled={!canEdit}
           >
-            {'DELETE'}
+            {'BORRAR'}
           </Button>
-        ); 
+        );
       }
       else
       {
@@ -230,7 +230,7 @@ class SelectionPane extends PureComponent {
 
       let nonRestrictedLayer = this.props.map.layers.polygon.find(x => !x.restricted);
 
-      let canAdd = user && 
+      let canAdd = user &&
         mapAccessLevel >= ApiManager.accessLevels.addPolygons &&
         (nonRestrictedLayer || mapAccessLevel >= ApiManager.accessLevels.addRestrictedPolygons);
 

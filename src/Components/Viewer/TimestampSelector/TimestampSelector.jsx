@@ -101,9 +101,9 @@ export class TimestampSelector extends PureComponent {
     return (
       <div className='timestamp-selector'>
         <div>
-          Timestamps
+          Marcas de tiempo
             <input type='checkbox' id='timestamp-range' onChange={this.onRangeToggleChange} checked={this.state.range}/>
-          Range
+          Intervalo
         </div>
         <Slider
           value={sliderValue}

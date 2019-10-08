@@ -88,7 +88,7 @@ class GeoMessageForm extends PureComponent {
 
     let formSelect = (
       <Select key='form-selector' className='selector' onChange={this.onSelectForm} value={this.state.selectedFormName}>
-        <MenuItem key='default' value='default'>{'(Optional) Select a form'}</MenuItem>
+        <MenuItem key='default' value='default'>{'(Opcional) Seleccione un formulario'}</MenuItem>
         {formOptions}
       </Select>
     )
@@ -384,9 +384,9 @@ class GeoMessageForm extends PureComponent {
     let hasAddImagePermission = user && map.accessLevel >= ApiManager.accessLevels.addGeoMessageImage;
     let hasPrivateMessagePermission = user && map.accessLevel >= ApiManager.accessLevels.addPrivateGeoMessage;
 
-    let title = 'Add GeoMessage';
+    let title = 'Añade un mensaje';
     if (!user) {
-      title = 'Please login';
+      title = 'Iniciar';
     }
     else if (!hasAddPermission) {
       title = 'Insufficient access';
@@ -413,7 +413,7 @@ class GeoMessageForm extends PureComponent {
                 {title}
               </Button> :
               <div className='geomessage-expanded-title'>
-                {'Add GeoMessage'}
+                {'Añade un mensaje'}
               </div>
           }
           action={
@@ -432,7 +432,7 @@ class GeoMessageForm extends PureComponent {
           <CardContent className='data-pane-card-content'>
             <TextField
               className='data-pane-text-field'
-              label={'GeoMessage'}
+              label={'Mensaje'}
               multiline
               value={this.state.messageText}
               onChange={this.onMessageChange}
@@ -442,7 +442,7 @@ class GeoMessageForm extends PureComponent {
               hasAddImagePermission ?
                 <div>
                   <div className='geomessage-upload-image-label'>
-                    {'Upload image'}
+                    {'Cargar imagen'}
                   </div>
                   <input
                     ref={this.fileUploadRef}
@@ -455,7 +455,7 @@ class GeoMessageForm extends PureComponent {
             {
               hasPrivateMessagePermission ?
                 <div>
-                  {'Private'}:
+                  {'Privado'}:
                   <Checkbox
                     color='primary'
                     checked={this.state.private}
@@ -475,7 +475,7 @@ class GeoMessageForm extends PureComponent {
                 onClick={this.onGeoMessageSubmit}
                 disabled={this.state.loading}
               >
-                {'Submit'}
+                {'ENVIAR'}
               </Button>
             </div>
             { this.state.loading ? <CircularProgress className='loading-spinner'/> : null}

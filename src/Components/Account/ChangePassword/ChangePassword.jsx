@@ -56,14 +56,14 @@ class ChangePassword extends PureComponent {
     return (
       <div className="login-block">
         <h1 className='account-title'>
-          {"ChangePassword"}
+          {"Cambia la contraseña"}
         </h1>
         {
           this.state.success ?
           <div className='main-content'>
-            <h2>{"Success"}</h2>
+            <h2>{"Éxito"}</h2>
             <p>
-              {"You can now login with your new password."}
+              {"Ahora puede iniciar sesión con su nueva contraseña."}
             </p>
             <div>
               <NavLink to='/account/management' style={{fontSize: '12pt'}}>
@@ -75,7 +75,7 @@ class ChangePassword extends PureComponent {
           <form>
             <div className='login-input-label-div'>
               <div>
-                {"New password"}
+                {"Nueva contraseña"}
               </div>
               <div>
                 <input className='login-input' type='password' tabIndex={0} ref='newPasswordInput'></input>
@@ -84,7 +84,7 @@ class ChangePassword extends PureComponent {
 
             <div className='login-input-label-div'>
               <div>
-                {"Repeat your new password"}
+                {"Repite tu nueva contraseña"}
               </div>
               <div>
                 <input className='login-input' type='password' tabIndex={0} ref='newPasswordRepeatInput'></input>
@@ -93,7 +93,7 @@ class ChangePassword extends PureComponent {
 
             <div className='login-input-label-div' onClick={this.changePassword.bind(this)} onKeyUp={this.onEnter.bind(this)}>
               <div className="button main-block-single-button" tabIndex={0}>
-                {"Change Password"}
+                {"Cambia la contraseña"}
               </div>
             </div>
           </form>

@@ -99,15 +99,15 @@ class LegendControl extends PureComponent {
     }
 
     if (availableClasses.length > 0) {
-      legendElements.push(<div key='classes' className='legend-line legend-line-header'>{'Classes'}</div>)
+      legendElements.push(<div key='classes' className='legend-line legend-line-header'>{'Clases'}</div>)
       createLegendLines(availableClasses);
     }
     if (availableMeasurements.length > 0) {
-      legendElements.push(<div key='measurements' className='legend-line legend-line-header'>{'Measurements'}</div>)
+      legendElements.push(<div key='measurements' className='legend-line legend-line-header'>{'Mediciones'}</div>)
       createLegendLines(availableMeasurements);
     }
     if (availablePolygonLayers.length > 0) {
-      legendElements.push(<div key='polygon_layers' className='legend-line legend-line-header'>{'Polygon layers'}</div>);
+      legendElements.push(<div key='polygon_layers' className='legend-line legend-line-header'>{'Capas de poligonos'}</div>);
       createLegendLines(availablePolygonLayers);
     }
 
@@ -125,7 +125,7 @@ class LegendControl extends PureComponent {
           className='material-card-header'
           title={
             <Typography variant="h6" component="h2" className='no-text-transform'>
-              {'Legend'}
+              {'Leyenda'}
             </Typography>
           }
         />

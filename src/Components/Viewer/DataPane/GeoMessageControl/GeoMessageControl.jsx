@@ -662,7 +662,7 @@ class GeoMessageControl extends PureComponent {
     if (this.state.filterSettings.applyToMap) {
       downloadGeometries = (
         <span>
-          {`${'Apply to map'} (${this.state.count})`}
+          {`${'Aplicar al mapa'} (${this.state.count})`}
           <IconButton
             className='feed-download-geometry-button'
             onClick={() => this.onDownloadClick()}
@@ -673,7 +673,7 @@ class GeoMessageControl extends PureComponent {
       );
     }
     else {
-      downloadGeometries = (<span>{'Apply to map'}</span>);
+      downloadGeometries = (<span>{'Aplicar al mapa'}</span>);
     }
 
     let filtersSectionClass = 'data-pane-card groups-filter-card';
@@ -687,7 +687,7 @@ class GeoMessageControl extends PureComponent {
           className='data-pane-title-header groups-filter-card-header'
           title={
             <Typography variant="h6" component="h2" className='no-text-transform'>
-              {'Filters'}
+              {'Filtros'}
             </Typography>
           }
           action={
@@ -710,7 +710,7 @@ class GeoMessageControl extends PureComponent {
             />
             {downloadGeometries}
             <FormControl className='card-form-control selector-single'>
-              <InputLabel htmlFor='select-multiple-checkbox-groups'>{'Groups filter'}</InputLabel>
+              <InputLabel htmlFor='select-multiple-checkbox-groups'>{'Grupo'}</InputLabel>
               <Select
                 className='selector'
                 multiple
@@ -728,7 +728,7 @@ class GeoMessageControl extends PureComponent {
               </Select>
             </FormControl>
             <FormControl className='card-form-control selector-single'>
-              <InputLabel htmlFor='select-multiple-checkbox-forms'>Type filter</InputLabel>
+              <InputLabel htmlFor='select-multiple-checkbox-forms'>Tipo</InputLabel>
               <Select
                 className='selector'
                 value={this.state.filterSettings.selectedTypes}
@@ -746,7 +746,7 @@ class GeoMessageControl extends PureComponent {
               </Select>
             </FormControl>
             <FormControl className='card-form-control selector-single'>
-              <InputLabel htmlFor='select-multiple-checkbox-forms'>{'Forms filter'}</InputLabel>
+              <InputLabel htmlFor='select-multiple-checkbox-forms'>{'Forma'}</InputLabel>
               <Select
                 className='selector'
                 multiple

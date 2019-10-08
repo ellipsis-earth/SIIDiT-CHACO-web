@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 
-import { 
+import {
   Card,
   Checkbox,
   CardHeader,
@@ -38,16 +38,16 @@ const BASE_SATELLITE_AVAILABLE_LAYER = {
   name: BASE_SATELLITE_LAYER_NAME
 }
 
-const tileLayerTypes = [ 
+const tileLayerTypes = [
   BASE_SATELLITE_LAYER_TYPE,
   {
-    name: IMAGES_TILE_LAYER_NAME, 
+    name: IMAGES_TILE_LAYER_NAME,
     defaultSelected: true,
     stacking: true,
     zIndex: ViewerUtility.tileLayerZIndex + 1
   },
   {
-    name: LABELS_TILE_LAYER_NAME, 
+    name: LABELS_TILE_LAYER_NAME,
     defaultSelected: false,
     stacking: false,
     zIndex: ViewerUtility.tileLayerZIndex + 1 + 300,
@@ -61,7 +61,7 @@ const tileLayerTypes = [
 ];
 
 
-class TileLayersControl extends PureComponent {  
+class TileLayersControl extends PureComponent {
 
   classes = null;
 
@@ -98,7 +98,7 @@ class TileLayersControl extends PureComponent {
     }
 
     let differentMap = this.props.map !== prevProps.map;
-    let differentTimestamp = !prevProps.timestampRange || 
+    let differentTimestamp = !prevProps.timestampRange ||
       this.props.timestampRange.start !== prevProps.timestampRange.start ||
       this.props.timestampRange.end !== prevProps.timestampRange.end
 
@@ -112,8 +112,8 @@ class TileLayersControl extends PureComponent {
         selectedLayers = this.getDefaultSelectedLayers(availableLayers);
         // let layerCheckboxes = this.createLayerCheckboxes(availableLayers, selectedLayers);
 
-        this.setState({ 
-          availableLayers: availableLayers, 
+        this.setState({
+          availableLayers: availableLayers,
           selectedLayers: selectedLayers
         });
       }
@@ -152,7 +152,7 @@ class TileLayersControl extends PureComponent {
     let availableLayers = [BASE_SATELLITE_AVAILABLE_LAYER, ...imageLayers, ...labelLayers, ...images2Layers];
 
     return availableLayers;
-  
+
   }
 
   getDefaultSelectedLayers = (availableLayers) => {
@@ -190,11 +190,11 @@ class TileLayersControl extends PureComponent {
         <div key={availableLayer.name}>
           <FormControlLabel
             control = {
-              <Checkbox 
-                key={availableLayer.name} 
+              <Checkbox
+                key={availableLayer.name}
                 classes={{ root: 'layers-control-checkbox' }}
                 color='primary'
-                value={availableLayer.name} 
+                value={availableLayer.name}
                 name={availableLayer.name}
                 onChange={this.onLayerChange}
                 checked={checked}
@@ -217,10 +217,10 @@ class TileLayersControl extends PureComponent {
       let tileLayerType = tileLayerTypes[i];
 
       let timestampStart = tileLayerType.stacking ? timestampRange.start : timestampRange.end;
-      let timestampEnd = timestampRange.end;      
+      let timestampEnd = timestampRange.end;
 
       for (let y = timestampStart; y <= timestampEnd; y++) {
-        
+
         let mapTimestamp = map.timestamps[y];
 
         if (!mapTimestamp) {
@@ -311,7 +311,7 @@ class TileLayersControl extends PureComponent {
 
       newSelectedLayers = [...this.state.selectedLayers, availableLayer];
 
-      changed = true; 
+      changed = true;
     }
     else if (!checked && isSelected) {
       newSelectedLayers = Utility.arrayRemove(this.state.selectedLayers, isSelected);
@@ -344,7 +344,7 @@ class TileLayersControl extends PureComponent {
           className='material-card-header'
           title={
             <Typography gutterBottom variant="h6" component="h2">
-              Layers
+              Capas
             </Typography>
           }
           action={

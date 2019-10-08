@@ -692,17 +692,17 @@ class Viewer extends PureComponent {
         <div className='viewer-menu'>
           <div className='button viewer-menu-button' onClick={() => this.openPane(CONTROL_PANE_NAME, true)}>
             <div className='viewer-menu-button-content'>
-              {"Control"}
+              {"Gestionar"}
             </div>
           </div>
           <div className='button viewer-menu-button' onClick={() => this.openPane(MAP_PANE_NAME, true)}>
             <div className='viewer-menu-button-content'>
-              {"Map"}
+              {"Mapa"}
             </div>
           </div>
           <div className='button viewer-menu-button' onClick={() => this.openPane(DATA_PANE_NAME, true)}>
             <div className='viewer-menu-button-content'>
-              {"Data"}
+              {"Datos"}
             </div>
           </div>
         </div>

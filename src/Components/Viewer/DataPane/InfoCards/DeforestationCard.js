@@ -22,7 +22,7 @@ class DeforestationCard extends PureComponent {
     super(props, context);
     this.state = {
       filterData: {},
-      totalsOpen: false,
+      totalsOpen: true,
       content: [],
     }
   }
@@ -86,7 +86,7 @@ class DeforestationCard extends PureComponent {
 
       for(let key in totals)
       {
-        content.push(<p key={key}>{key}: {totals[key]}</p>)
+        content.push(<p key={key}><b>{key}</b>:<br/>{totals[key]} km2</p>)
       }
     }
 
@@ -98,13 +98,13 @@ class DeforestationCard extends PureComponent {
     {
       let filterData = this.prepareFilterData(this.props.map, [
       {
-        name: 'deforestation',
+        name: 'Deforestacion Actual',
         layerID: 'b4cfa212-9547-4d43-9119-1db5482954a3',
         formID: '5fd5ebe0-9d02-11e9-baf8-42010a840021',
         types: ['standard_tile'],
-      }, 
+      },
       {
-        name: 'lack of forest',
+        name: 'falta de bosque in reserva Actual',
         layerID: "647c9802-f136-4029-aa6d-884396be4e9b",
         formID: '0ef01ab2-9d01-11e9-baf8-42010a840021',
         types: ['polygon'],
@@ -113,17 +113,17 @@ class DeforestationCard extends PureComponent {
     else
     {
       this.prepareTotalsCard(this.props.totals);
-    }  
+    }
   }
 
   render = () => {
     return (
-      <Card className='data-pane-card TotalsCard' key={'deforestation' + this.state.totalsOpen}>
+      <Card className='data-pane-card TotalsCard' key={'deforestation:' + this.state.totalsOpen}>
         <CardHeader
           className='material-card-header'
           title={
             <Typography gutterBottom variant="h6" component="h2">
-              {'Deforestation'}
+              {'Deforestación'}
             </Typography>
           }
           action={
