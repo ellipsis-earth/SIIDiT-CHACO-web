@@ -17,6 +17,15 @@
   padding: 0px;
 }
 
+.main-menu-logo-item
+{
+  display: block;
+}
+
+.main-menu-logo-item:hover {
+  cursor: pointer;
+}
+
 .main-menu-logo {
   width: auto;
   height: 45px;
