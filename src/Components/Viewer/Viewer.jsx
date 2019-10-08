@@ -660,7 +660,7 @@ class Viewer extends PureComponent {
               onViewportChanged={this.onLeafletMapViewportChanged}
             >
               <Control position="bottomright">
-                <Button variant='contained' color='secondary' onClick={() => {window.open('https://youtu.be/5KXOH6HMLeM','_blank');}}><InfoIcon /></Button>
+                <Button variant='contained' color='secondary' onClick={() => {window.open('https://www.youtube.com/watch?v=Eo6P0xEDE-Q&feature=youtu.be','_blank');}}><InfoIcon /></Button>
               </Control>
               {this.state.allLayers}
               {this.state.geolocation ? <Marker position={this.state.geolocation}/> : null}
