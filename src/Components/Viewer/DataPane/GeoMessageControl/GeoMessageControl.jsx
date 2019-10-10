@@ -190,7 +190,9 @@ class GeoMessageControl extends PureComponent {
     let element = this.props.element;
     let elementProperties = element.feature.properties;
 
-    if (element.type === ViewerUtility.standardTileLayerType) {
+
+
+    if (element.type === ViewerUtility.standardTileLayerType || element.filter.type === 'tile') {
       body.tileIds = [{
         tileX: elementProperties.tileX,
         tileY: elementProperties.tileY,
@@ -198,6 +200,7 @@ class GeoMessageControl extends PureComponent {
       }];
 
       urlType = 'tile';
+      element.type = ViewerUtility.standardTileLayerType;
     }
     else if (element.type === ViewerUtility.polygonLayerType) {
       body.polygonIds = [elementProperties.id];

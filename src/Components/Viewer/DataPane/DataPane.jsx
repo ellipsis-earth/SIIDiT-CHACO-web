@@ -126,12 +126,12 @@ class DataPane extends PureComponent {
       idText = this.props.map.name;
     }
     else if (element) {
-      if (element.type === ViewerUtility.standardTileLayerType) {
-        title = 'Standard tile';
+      if (element.type === ViewerUtility.standardTileLayerType || element.filter.type === 'tile') {
+        title = 'Teja';
         idText = `${element.feature.properties.tileX}, ${element.feature.properties.tileY}, ${element.feature.properties.zoom}`;
       }
       else if (element.type === ViewerUtility.polygonLayerType) {
-        title = 'Polygon';
+        title = 'Polígono';
         idText = element.feature.properties.id;
       }
       else if (element.type === ViewerUtility.customPolygonTileLayerType) {

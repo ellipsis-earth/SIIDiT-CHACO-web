@@ -321,11 +321,12 @@ class Viewer extends PureComponent {
     );
   }
 
-  selectFeature = (type, feature, hasAggregatedData, color, cb) => {
+  selectFeature = (type, feature, hasAggregatedData, color, cb, filter) => {
     let element = {
       type: type,
       hasAggregatedData: hasAggregatedData,
       feature: feature,
+      filter: filter,
     };
 
     let geoJson = {
@@ -575,7 +576,7 @@ class Viewer extends PureComponent {
     if (this.state.panes.includes(MAP_PANE_NAME)) {
 
       if (this.flyToInfo.type === ViewerUtility.flyToType.currentLocation) {
-        this.leafletMap.current.leafletElement.flyTo(this.flyToInfo.target);
+        this.leafletMap.current.leafletElement.flyTo(this.flyToInfo.target, 14);
       }
       else {
         this.leafletMap.current.leafletElement.flyToBounds(this.flyToInfo.target, { maxZoom: this.state.map.zoom });

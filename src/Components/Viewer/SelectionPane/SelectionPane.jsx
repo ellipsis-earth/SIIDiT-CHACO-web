@@ -177,7 +177,7 @@ class SelectionPane extends PureComponent {
       ));
     }
 
-    if (element.type === ViewerUtility.standardTileLayerType) {
+    if (element.type === ViewerUtility.standardTileLayerType || element.filter.type === 'tile') {
       title = 'Teja';
     }
     else if (element.type === ViewerUtility.polygonLayerType) {
@@ -189,28 +189,31 @@ class SelectionPane extends PureComponent {
 
       if (user)
       {
-        secondRowButtons.push(
-          <Button
-            key='edit'
-            variant='outlined'
-            size='small'
-            className='selection-pane-button'
-            onClick={() => this.onElementActionClick(ViewerUtility.dataPaneAction.editCustomPolygon)}
-            disabled={!canEdit}
-          >
-            {'EDITAR'}
-          </Button>,
-          <Button
-            key='delete'
-            variant='outlined'
-            size='small'
-            className='selection-pane-button'
-            onClick={() => this.onElementActionClick(DELETE_CUSTOM_POLYGON_ACTION)}
-            disabled={!canEdit}
-          >
-            {'BORRAR'}
-          </Button>
-        );
+        if (!element.filter)
+        {
+          secondRowButtons.push(
+            <Button
+              key='edit'
+              variant='outlined'
+              size='small'
+              className='selection-pane-button'
+              onClick={() => this.onElementActionClick(ViewerUtility.dataPaneAction.editCustomPolygon)}
+              disabled={!canEdit}
+            >
+              {'EDITAR'}
+            </Button>,
+            <Button
+              key='delete'
+              variant='outlined'
+              size='small'
+              className='selection-pane-button'
+              onClick={() => this.onElementActionClick(DELETE_CUSTOM_POLYGON_ACTION)}
+              disabled={!canEdit}
+            >
+              {'BORRAR'}
+            </Button>
+          );
+        }
       }
       else
       {

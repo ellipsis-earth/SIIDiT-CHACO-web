@@ -42,8 +42,8 @@ class PolygonLayersControl extends PureComponent {
       count: {}
     };
 
-    this.filterDeforestatcion = ["f141f4b3-4caa-4654-9d37-61dcf4a3cd6d", "1336d0d0-502c-4736-b76f-2d5122f7c3e8"];
     this.filterDetectada = ["b4cfa212-9547-4d43-9119-1db5482954a3", "647c9802-f136-4029-aa6d-884396be4e9b"];
+    this.filterInformation = ["bfe00499-c9f4-423f-b4c6-9adfd4e91d1e", "963c2e9f-068a-4213-8cb7-cf336c57d40e", "7373e49b-dae5-48e0-b937-7ee07a9d5cb2", "e56e3079-a0e1-4e44-8aef-219dde0cb850", "e3fa7c52-f02c-4977-bdd9-33b250da9b33", "5410fdcd-6b17-414c-8be3-c973db5bd0f9", "e99121e1-9d6e-4bfb-94b6-0b8ca1492ff3", "5e45ea5c-1f1c-47bf-9309-12316200cf61"]
 
     this.filterProps = {
       "b4cfa212-9547-4d43-9119-1db5482954a3": {
@@ -184,17 +184,17 @@ class PolygonLayersControl extends PureComponent {
         </div>
       )
 
-      if (this.filterDetectada.includes(availableLayer.id))
+      if (this.filterInformation.includes(availableLayer.id))
+      {
+        options[2][1].push(option)
+      }
+      else if (this.filterDetectada.includes(availableLayer.id))
       {
         options[0][1].push(option)
       }
-      else if (this.filterDeforestatcion.includes(availableLayer.id))
-      {
-        options[1][1].push(option)
-      }
       else
       {
-        options[2][1].push(option)
+        options[1][1].push(option)
       }
     }
 
@@ -205,7 +205,7 @@ class PolygonLayersControl extends PureComponent {
     let border = 2;
 
     availableLayers = JSON.parse(JSON.stringify(availableLayers));
-    let filter = [...(JSON.parse(JSON.stringify(this.filterDetectada))), ...(JSON.parse(JSON.stringify(this.filterDeforestatcion)))]
+    let filter = JSON.parse(JSON.stringify(availableLayers)).filter(x => !this.filterInformation.includes(x.id));
 
     availableLayers.sort((a,b) => {
       if (filter.includes(a.id) && filter.includes(b.id))
@@ -350,7 +350,7 @@ class PolygonLayersControl extends PureComponent {
               data={polygonsGeoJson}
               style={ViewerUtility.createGeoJsonLayerStyle(`#${polygonLayer.color}`, null, 0)}
               zIndex={ViewerUtility.polygonLayerZIndex + i}
-              onEachFeature={(feature, layer) => layer.on({ click: () => this.onFeatureClick(feature, polygonLayer.hasAggregatedData) })}
+              onEachFeature={(feature, layer) => layer.on({ click: () => this.onFeatureClick(feature, polygonLayer.hasAggregatedData, null, null, filter) })}
             />
           );
         });
@@ -401,8 +401,8 @@ class PolygonLayersControl extends PureComponent {
     this.setState({ expanded: !this.state.expanded });
   }
 
-  onFeatureClick = (feature, hasAggregatedData) => {
-    this.props.onFeatureClick(feature, hasAggregatedData);
+  onFeatureClick = (feature, hasAggregatedData, color, cb, filter) => {
+    this.props.onFeatureClick(feature, hasAggregatedData, color, cb, filter);
   }
 
   onDownload = (layerName) => {

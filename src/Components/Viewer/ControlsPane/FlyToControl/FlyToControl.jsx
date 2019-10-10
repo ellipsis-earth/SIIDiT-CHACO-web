@@ -31,7 +31,7 @@ class FlyToControl extends PureComponent {
     this.state = {
       expanded: true,
 
-      selectedFlyToType: ViewerUtility.flyToType.map,
+      selectedFlyToType: ViewerUtility.flyToType.currentLocation,
 
       elementId: ''
     };
@@ -167,6 +167,7 @@ class FlyToControl extends PureComponent {
               onChange={this.onSelectFlyTo}
               value={this.state.selectedFlyToType}
             >
+               <MenuItem value={ViewerUtility.flyToType.map}>Mapa actual</MenuItem>
                <MenuItem value={ViewerUtility.flyToType.currentLocation}>Mi ubicacion</MenuItem>
                <MenuItem value={ViewerUtility.flyToType.standardTile}>Teja</MenuItem>
                <MenuItem value={ViewerUtility.flyToType.polygon}>Polígono</MenuItem>
