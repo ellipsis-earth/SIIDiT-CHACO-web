@@ -80,7 +80,7 @@ class Register extends PureComponent {
             <form>
               <div className='login-input-label-div'>
                 <div>
-                  {"Username"}
+                  {"Nombre de usuario"}
                 </div>
                 <div>
                   <input className='login-input' tabIndex={0} ref='usernameInput'></input>
