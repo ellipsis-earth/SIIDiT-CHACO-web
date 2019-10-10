@@ -98,13 +98,13 @@ class DeforestationCard extends PureComponent {
     {
       let filterData = this.prepareFilterData(this.props.map, [
       {
-        name: 'Deforestacion Actual',
+        name: 'Deforestacion actual',
         layerID: 'b4cfa212-9547-4d43-9119-1db5482954a3',
         formID: '5fd5ebe0-9d02-11e9-baf8-42010a840021',
         types: ['standard_tile'],
       },
       {
-        name: 'falta de bosque in reserva Actual',
+        name: 'falta de bosque in reserva actual',
         layerID: "647c9802-f136-4029-aa6d-884396be4e9b",
         formID: '0ef01ab2-9d01-11e9-baf8-42010a840021',
         types: ['polygon'],

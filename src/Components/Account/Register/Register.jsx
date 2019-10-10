@@ -26,7 +26,7 @@ class Register extends PureComponent {
 
     this.setState({ submitting: true }, () => {
       if (password !== repeatPassword) {
-        alert('Password and the repeat password do not match.');
+        alert('La contraseña y la contraseña de repetición no coinciden.');
         return;
       }
 
@@ -58,21 +58,21 @@ class Register extends PureComponent {
     return (
       <div className="login-block">
         <h1 className='account-title'>
-          {"Register"}
+          {" Registro"}
         </h1>
         {
           this.state.success ?
             <div className='main-content'>
-              <h2>{"Success"}</h2>
+              <h2>{"Éxito"}</h2>
               <p>
-                {'We have sent you an email to validate your email address. Please follow the procedures in the mail.'}
+                {' Le hemos enviado un correo electrónico para validar su dirección de correo electrónico. Por favor, siga los procedimientos en el correo.'}
               </p>
               <p>
-                {"You must verify your email before you can login."}
+                {"Debe verificar su correo electrónico antes de poder iniciar sesión."}
               </p>
               <div>
                 <NavLink to='/login' style={{fontSize: '12pt'}}>
-                  {"Login"}
+                  {"Iniciar"}
                 </NavLink>
               </div>
             </div>
@@ -80,7 +80,7 @@ class Register extends PureComponent {
             <form>
               <div className='login-input-label-div'>
                 <div>
-                  {"Username"}
+                  {"Nombre de usuario"}
                 </div>
                 <div>
                   <input className='login-input' tabIndex={0} ref='usernameInput'></input>
@@ -88,7 +88,7 @@ class Register extends PureComponent {
               </div>
               <div className='login-input-label-div'>
                 <div>
-                  {"Password"}
+                  {"Contraseña"}
                 </div>
                 <div>
                   <input className='login-input' tabIndex={0} type='password' ref='passwordInput'></input>
@@ -97,7 +97,7 @@ class Register extends PureComponent {
 
               <div className='login-input-label-div'>
                 <div>
-                  {"Repeat your password"}
+                  {"Repite la contraseña"}
                 </div>
                 <div>
                   <input className='login-input' tabIndex={0} type='password' ref='repeatPasswordInput' onKeyUp={this.onEnter.bind(this)}></input>
@@ -106,7 +106,7 @@ class Register extends PureComponent {
 
               <div className='login-input-label-div'>
                 <div>
-                  {"Email"}
+                  {"E-mail"}
                 </div>
                 <div>
                   <input className='login-input' tabIndex={0} type='email' ref='emailInput' onKeyUp={this.onEnter.bind(this)}></input>
@@ -117,7 +117,7 @@ class Register extends PureComponent {
                   <img className='loading-spinner' src='/images/spinner.png' alt='spinner' /> :
                   <div className='login-input-label-div' onClick={this.register.bind(this)} onKeyUp={this.onEnter.bind(this)} disabled={this.state.submitting}>
                     <div className="button main-block-single-button" tabIndex={0}>
-                      {"Register"}
+                      {"Registro"}
                     </div>
                   </div>
               }
