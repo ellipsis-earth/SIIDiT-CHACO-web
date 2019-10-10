@@ -109,8 +109,6 @@ export class MainMenu extends Component {
               <img className='main-menu-logo' src='/images/logos/logo_horizontal.svg' alt='SIIDiT - CHACO'/>
             </NavLink>
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls='basic-navbar-nav' style={{ height: '45px' }} />
-          <Navbar.Collapse id='basic-navbar-nav'>
             <Nav>
               <NavItem>
                 <NavLink to={this.props.user ? '/account': '/login'} onClick={() => this.onNavItemClick(navKeys.login)}>
@@ -120,7 +118,6 @@ export class MainMenu extends Component {
                 </NavLink>
               </NavItem>
             </Nav>
-          </Navbar.Collapse>
         </Navbar>
       </div>
     )

@@ -177,7 +177,7 @@ class SelectionPane extends PureComponent {
       ));
     }
 
-    if (element.type === ViewerUtility.standardTileLayerType || element.filter.type === 'tile') {
+    if (element.type === ViewerUtility.standardTileLayerType || (element.filter && element.filter.type === 'tile')) {
       title = 'Teja';
     }
     else if (element.type === ViewerUtility.polygonLayerType) {

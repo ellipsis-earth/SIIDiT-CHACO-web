@@ -104,7 +104,7 @@ class DeforestationCard extends PureComponent {
         types: ['standard_tile'],
       },
       {
-        name: 'falta de bosque in reserva actual',
+        name: 'Falta de bosque in reserva actual',
         layerID: "647c9802-f136-4029-aa6d-884396be4e9b",
         formID: '0ef01ab2-9d01-11e9-baf8-42010a840021',
         types: ['polygon'],

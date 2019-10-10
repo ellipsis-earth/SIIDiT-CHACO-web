@@ -82,3 +82,11 @@
     width: 100%;
   }
 }
+
+@media (min-width: 768px)
+{
+  .navbar-expand-md
+  {
+    justify-content: space-between;
+  }
+}

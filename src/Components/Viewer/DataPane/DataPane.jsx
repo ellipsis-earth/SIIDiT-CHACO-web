@@ -126,7 +126,7 @@ class DataPane extends PureComponent {
       idText = this.props.map.name;
     }
     else if (element) {
-      if (element.type === ViewerUtility.standardTileLayerType || element.filter.type === 'tile') {
+      if (element.type === ViewerUtility.standardTileLayerType || (element.filter && element.filter.type === 'tile')) {
         title = 'Teja';
         idText = `${element.feature.properties.tileX}, ${element.feature.properties.tileY}, ${element.feature.properties.zoom}`;
       }

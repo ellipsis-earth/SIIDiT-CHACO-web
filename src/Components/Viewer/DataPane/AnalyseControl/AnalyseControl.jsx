@@ -107,7 +107,14 @@ class AnalyseControl extends PureComponent {
       }
     }
 
-    this.setState({ availableClasses: availableClasses });
+    if (availableClasses.length === 1)
+    {
+      this.setState({ availableClasses: availableClasses }, this.onSelectClass({target : {value: availableClasses[0]}}));
+    }
+    else
+    {
+      this.setState({ availableClasses: availableClasses });
+    }
   }
 
   getData = async (type, className) => {
@@ -190,25 +197,33 @@ class AnalyseControl extends PureComponent {
           this.setState({ classesData: data, classesLoading: false });
         }
         else if (type === ViewerUtility.dataGraphType.measurements) {
-          let newmeasurementsData = {
+          let newMeasurementsData = {
             ...this.state.measurementsData
           };
 
-          newmeasurementsData[className] = data;
+          newMeasurementsData[className] = data;
 
-          this.setState({ measurementsData: newmeasurementsData, measurementsLoading: false });
+          this.setState({ measurementsData: newMeasurementsData, measurementsLoading: false });
         }
       })
       .catch(err => {
+        let data = {
+          error: true,
+          status: err.status,
+          message: err.message
+        };
+
         if (type === ViewerUtility.dataGraphType.classes) {
-          this.setState({ classesData: null, classesLoading: false });
+          this.setState({ classesData: data, classesLoading: false });
         }
         else if (type === ViewerUtility.dataGraphType.measurements) {
-          let newmeasurementsData = {
+          let newMeasurementsData = {
             ...this.state.measurementsData
           };
 
-          this.setState({ measurementsData: newmeasurementsData, measurementsLoading: false });
+          newMeasurementsData[className] = data;
+          
+          this.setState({ measurementsData: newMeasurementsData, measurementsLoading: false });
         }
       });
   }
@@ -314,6 +329,40 @@ class AnalyseControl extends PureComponent {
       return null;
     }
 
+    let classesDataElement = null;
+    let classesData = this.state.classesData;
+    if (!this.state.classesLoading && classesData) {
+      if (!classesData.error) {
+        classesDataElement = 
+          <LineChart
+            map={this.props.map}
+            data={classesData}
+            type={ViewerUtility.dataGraphType.classes}
+            maxMask={this.state.maxMask}
+          />
+      }
+      else {
+        classesDataElement = (<div>{classesData.message}</div>);
+      }
+    }
+
+    let measurementsElement = null;
+    let measurementData = this.state.measurementsData[this.state.selectedClass]
+    if (!this.state.measurementsLoading && measurementData) {
+      if (!measurementData.error) {
+        measurementsElement = 
+          <LineChart
+            map={this.props.map}
+            data={measurementsElement}
+            type={ViewerUtility.dataGraphType.measurements}
+            maxMask={this.state.maxMask}
+          /> 
+      }
+      else {
+        measurementsElement = (<div>{measurementData.message}</div>);        
+      }
+    }    
+
     return (
       <div>
         <Card className='data-pane-card'>
@@ -350,18 +399,10 @@ class AnalyseControl extends PureComponent {
           <Collapse in={this.state.classesExpanded}>
             <CardContent className='data-pane-card-content'>
               {this.state.classesLoading ? <CircularProgress className='loading-spinner'/> : null}
-              {
-                !this.state.classesLoading && this.state.classesData ?
-                  <LineChart
-                    map={this.props.map}
-                    data={this.state.classesData}
-                    type={ViewerUtility.dataGraphType.classes}
-                    maxMask={this.state.maxMask}
-                  /> : null
-              }
+              {classesDataElement}
             </CardContent>
             {
-              !this.state.classesLoading && this.state.classesData ?
+              !this.state.classesLoading && classesData && !classesData.error ?
                 <CardActions className='analyse-card-actions'>
                   <IconButton
                     onClick={() => this.onDownloadData(false)}
@@ -394,7 +435,7 @@ class AnalyseControl extends PureComponent {
           <Collapse in={this.state.measurementsExpanded}>
             <CardContent className='data-pane-card-content analyse-card-content'>
               {
-                this.state.availableClasses ?
+                this.state.availableClasses && this.state.availableClasses.length > 1 ?
                   <Select
                     className='class-selector'
                     value={this.state.selectedClass}
@@ -404,21 +445,8 @@ class AnalyseControl extends PureComponent {
                     {this.renderClassOptions()}
                   </Select> : null
               }
-              {
-                !this.state.availableClasses || this.state.measurementsLoading ?
-                  <div style={{ position: 'relative', height: '50px' }}>
-                    <CircularProgress className='loading-spinner'/>
-                  </div> : null
-              }
-              {
-                !this.state.measurementsLoading && this.state.measurementsData[this.state.selectedClass] ?
-                  <LineChart
-                    map={this.props.map}
-                    data={this.state.measurementsData[this.state.selectedClass]}
-                    type={ViewerUtility.dataGraphType.measurements}
-                    maxMask={this.state.maxMask}
-                  /> : null
-              }
+              { this.state.measurementsLoading ? <CircularProgress className='loading-spinner'/> : null }
+              {measurementsElement}
             </CardContent>
             {
               !this.state.measurementsLoading && this.state.measurementsData[this.state.selectedClass] ?
