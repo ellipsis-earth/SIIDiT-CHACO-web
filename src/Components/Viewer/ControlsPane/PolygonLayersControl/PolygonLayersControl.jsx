@@ -17,10 +17,12 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Utility from '../../../../Utility';
 import ViewerUtility from '../../ViewerUtility';
 
-import LayerInfoButton from './LayerInfo/LayerInfo';
+import LayerInfoButton from './LayerUtilities/LayerInfo';
 import './PolygonLayersControl.css';
 
 import ApiManager from '../../../../ApiManager';
+
+import MobileWarning from './LayerUtilities/MobileWarning'
 
 const MAX_POLYGONS = 500;
 
@@ -39,7 +41,10 @@ class PolygonLayersControl extends PureComponent {
 
       expanded: true,
 
-      count: {}
+      count: {},
+
+      warningLayer: null,
+      warningOpen: false,
     };
 
     this.filterDetectada = ["b4cfa212-9547-4d43-9119-1db5482954a3", "647c9802-f136-4029-aa6d-884396be4e9b"];
@@ -55,6 +60,15 @@ class PolygonLayersControl extends PureComponent {
         formID: '0ef01ab2-9d01-11e9-baf8-42010a840021',
       }
     };
+
+    try
+    {
+      this.state.isMobile = document.createEvent("TouchEvent") && window.innerWidth <= 700 ? true : null;
+    }
+    catch(e)
+    {
+      this.state.isMobile = false
+    }
   }
 
   componentDidMount() {
@@ -364,36 +378,59 @@ class PolygonLayersControl extends PureComponent {
   }
 
   onLayerChange = (e) => {
-    let layerName = e.target.value;
-    let checked = e.target.checked;
+    if(e && e.target)
+    {
+      let layerName = e.target.value;
+      let checked = e.target.checked;
 
-    let isSelected = this.state.selectedLayers.find(x => x.name === layerName);
+      let isSelected = this.state.selectedLayers.find(x => x.name === layerName);
 
-    let newSelectedLayers = null;
-    let changed = false;
+      let newSelectedLayers = null;
+      let changed = false;
 
-    if (checked && !isSelected) {
-      let availableLayer = this.state.availableLayers.find(x => x.name === layerName);
+      if (checked && !isSelected) {
+        if (this.state.isMobile)
+        {
+          if(!this.state.warningOpen)
+          {
+            this.setState({ warningOpen: true, warningLayer: {target: {value: e.target.value, checked: e.target.checked}} });
+          }
+          else
+          {
+            let availableLayer = this.state.availableLayers.find(x => x.name === layerName);
 
-      newSelectedLayers = [...this.state.selectedLayers, availableLayer];
+            newSelectedLayers = [...this.state.selectedLayers, availableLayer];
 
-      changed = true;
-    }
-    else if (!checked && isSelected) {
-      newSelectedLayers = Utility.arrayRemove(this.state.selectedLayers, isSelected);
+            changed = true;
 
-      newSelectedLayers = [...newSelectedLayers];
+            this.setState({ warningOpen: false, warningLayer: null})
+          }
+        }
+        else
+        {
+          let availableLayer = this.state.availableLayers.find(x => x.name === layerName);
 
-      changed = true;
-    }
+          newSelectedLayers = [...this.state.selectedLayers, availableLayer];
 
-    if (changed) {
-      this.setState({ selectedLayers: newSelectedLayers });
+          changed = true;
+        }
+      }
+      else if (!checked && isSelected) {
+        newSelectedLayers = Utility.arrayRemove(this.state.selectedLayers, isSelected);
 
-      this.prepareLayers(this.props.map, this.props.timestampRange, this.state.availableLayers, newSelectedLayers)
-        .then(standardTilesLayers => {
-          this.props.onLayersChange(standardTilesLayers);
-        });
+        newSelectedLayers = [...newSelectedLayers];
+
+        changed = true;
+      }
+
+      if (changed) {
+        this.setState({ selectedLayers: newSelectedLayers });
+
+        this.prepareLayers(this.props.map, this.props.timestampRange, this.state.availableLayers, newSelectedLayers)
+          .then(standardTilesLayers => {
+            this.props.onLayersChange(standardTilesLayers);
+          });
+      }
     }
   }
 
@@ -431,6 +468,18 @@ class PolygonLayersControl extends PureComponent {
     ViewerUtility.download(fileName, JSON.stringify(data.geoJson), 'application/json');
   }
 
+  handleClose = (value) => {
+    let warningLayer = this.state.warningLayer;
+    if (value)
+    {
+      this.onLayerChange(warningLayer)
+    }
+    else
+    {
+      this.setState({ warningOpen: false, warningLayer: null})
+    }
+  }
+
   render() {
 
     if (!this.props.map || this.state.availableLayers.length === 0) {
@@ -438,37 +487,44 @@ class PolygonLayersControl extends PureComponent {
     }
 
     return (
-      <Card className='layers-contol'>
-        <CardHeader
-          className='material-card-header'
-          title={
-            <Typography gutterBottom variant="h6" component="h2">
-              {'Polígonos'}
-            </Typography>
-          }
-          action={
-            <IconButton
-              className={this.state.expanded ? 'expand-icon expanded' : 'expand-icon'}
-              onClick={this.onExpandClick}
-              aria-expanded={this.state.expanded}
-              aria-label='Show'
-            >
-              <ExpandMoreIcon />
-            </IconButton>
-          }
-        />
-        <Collapse in={this.state.expanded}>
-          <CardContent
-            className={'card-content'}
-          >
-            {
-              !this.props.override ?
-                this.createLayerCheckboxes() :
-                <div className='controls-pane-background-text'>Controlled by feed</div>
+      <div>
+        <Card className='layers-contol'>
+          <CardHeader
+            className='material-card-header'
+            title={
+              <Typography gutterBottom variant="h6" component="h2">
+                {'Polígonos'}
+              </Typography>
             }
-          </CardContent>
-        </Collapse>
-      </Card>
+            action={
+              <IconButton
+                className={this.state.expanded ? 'expand-icon expanded' : 'expand-icon'}
+                onClick={this.onExpandClick}
+                aria-expanded={this.state.expanded}
+                aria-label='Show'
+              >
+                <ExpandMoreIcon />
+              </IconButton>
+            }
+          />
+          <Collapse in={this.state.expanded}>
+            <CardContent
+              className={'card-content'}
+            >
+              {
+                !this.props.override ?
+                  this.createLayerCheckboxes() :
+                  <div className='controls-pane-background-text'>Controlled by feed</div>
+              }
+            </CardContent>
+          </Collapse>
+        </Card>
+          <MobileWarning
+            key={this.state.warningOpen}
+            handleClose={this.handleClose}
+            open={this.state.warningOpen}
+          />
+      </div>
     );
   }
 }

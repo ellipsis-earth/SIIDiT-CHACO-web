@@ -22,7 +22,7 @@ import { Button } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
 import Control from 'react-leaflet-control';
 
-import { LayerInfoCard } from './ControlsPane/PolygonLayersControl/LayerInfo/LayerInfo';
+import { LayerInfoCard } from './ControlsPane/PolygonLayersControl/LayerUtilities/LayerInfo';
 
 
 import './Viewer.css';
@@ -71,6 +71,7 @@ class Viewer extends PureComponent {
     this.controlsPane = React.createRef();
     this.dataPane = React.createRef();
     this.selectionPane = React.createRef();
+    this.layerInfoCard = React.createRef();
 
     this.state = {
       leafletMapViewport: DEFAULT_VIEWPORT,
@@ -598,6 +599,17 @@ class Viewer extends PureComponent {
     this.setState({totals: totals})
   }
 
+  closePanes = (type) => {
+    if (type === 'selection')
+    {
+      this.layerInfoCard.current.onCloseClick();
+    }
+    else
+    {
+      this.selectionPane.current.onCloseClick();
+    }
+  }
+
   render() {
     let mapPaneStyle = {
       display: 'block',
@@ -652,6 +664,7 @@ class Viewer extends PureComponent {
               onFlyTo={this.onFlyTo}
               onDeselect={this.deselectCurrentElement}
               onDeletePolygon={this.updatePolygons}
+              closePanes={this.closePanes}
             />
             <Map
               center={DEFAULT_VIEWPORT.center}
@@ -665,7 +678,14 @@ class Viewer extends PureComponent {
               </Control>
               {this.state.allLayers}
               {this.state.geolocation ? <Marker position={this.state.geolocation}/> : null}
-              <LayerInfoCard content={this.state.layerInfoContent.content} random={this.state.layerInfoContent.random}/>
+              <LayerInfoCard
+                content={this.state.layerInfoContent.content}
+                random={this.state.layerInfoContent.random}
+                ref={this.layerInfoCard} 
+                closePanes={this.closePanes}
+                openPane={this.openPane}
+                paneName={CONTROL_PANE_NAME}
+              />
             </Map>
           </div>
 

@@ -69,12 +69,16 @@ export class LayerInfoCard extends PureComponent {
   componentDidUpdate = (prevProps) => {
     if (prevProps.content !== this.props.content)
     {
+      this.props.closePanes('info');
       this.setState({content: this.props.content, hidden: false});
+      this.props.openPane(this.props.paneName, true)
     }
 
     if (prevProps.random !== this.props.random)
     {
+      this.props.closePanes('info');
       this.setState({hidden: false})
+      this.props.openPane(this.props.paneName, true)
     }
   }
 

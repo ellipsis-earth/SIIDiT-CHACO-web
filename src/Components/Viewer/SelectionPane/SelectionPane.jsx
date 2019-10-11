@@ -39,11 +39,13 @@ class SelectionPane extends PureComponent {
       this.setState({ isOpen: false });
     }
     else if (prevProps.element !== this.props.element) {
+      this.props.closePanes('selection');
       this.setState({ isOpen: true });
     }
   }
 
   open = () => {
+    this.props.closePanes('selection');
     this.setState({ isOpen: true });
   }
 
