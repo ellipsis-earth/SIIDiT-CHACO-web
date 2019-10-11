@@ -95,7 +95,10 @@ class Viewer extends PureComponent {
       totals: -1,
 
       layerInfoContent: [],
+
     };
+
+    this.state.isMobile = window.innerWidth <= 700 ? true : false;
   }
 
   initializeDrawingControl = () => {
@@ -685,6 +688,7 @@ class Viewer extends PureComponent {
                 closePanes={this.closePanes}
                 openPane={this.openPane}
                 paneName={CONTROL_PANE_NAME}
+                isMobile={this.state.isMobile}
               />
             </Map>
           </div>

@@ -71,14 +71,20 @@ export class LayerInfoCard extends PureComponent {
     {
       this.props.closePanes('info');
       this.setState({content: this.props.content, hidden: false});
-      this.props.openPane(this.props.paneName, true)
+      if (this.props.isMobile)
+      {
+        this.props.openPane(this.props.paneName, true)
+      }
     }
 
     if (prevProps.random !== this.props.random)
     {
       this.props.closePanes('info');
       this.setState({hidden: false})
-      this.props.openPane(this.props.paneName, true)
+      if (this.props.isMobile)
+      {
+        this.props.openPane(this.props.paneName, true)
+      }
     }
   }
 
