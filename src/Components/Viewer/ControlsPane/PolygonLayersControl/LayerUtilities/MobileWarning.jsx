@@ -16,18 +16,18 @@ export default class MobileWarning extends PureComponent {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{"Data Warning"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{"Advertencia"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              This is a big request. If not connected to WiFi, this can deplete your data bundle quickly. 
+              Esta es una gran solicitud. Si no está conectado a wifi, esto puede agotar su paquete de datos rápidamente.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => this.props.handleClose(false)}color="primary">
-              Do not load
+              Abortar
             </Button>
             <Button onClick={() => this.props.handleClose(true)} color="primary" autoFocus>
-              I understand and load
+              Entiendo carga
             </Button>
           </DialogActions>
         </Dialog>

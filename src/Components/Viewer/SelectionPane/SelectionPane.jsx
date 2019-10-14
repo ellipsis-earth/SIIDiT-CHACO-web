@@ -226,7 +226,7 @@ class SelectionPane extends PureComponent {
           className='selection-pane-button'
           onClick={() => {this.setState({redirect: true})}}
         >
-          {'PLEASE LOGIN'}
+          {'INICIAR'}
         </Button>)
       }
     }
@@ -248,7 +248,7 @@ class SelectionPane extends PureComponent {
           onClick={() => this.onElementActionClick(ViewerUtility.dataPaneAction.createCustomPolygon)}
           disabled={!canAdd}
         >
-          {'ADD'}
+          {'AÑADIR'}
         </Button>
       );
     }

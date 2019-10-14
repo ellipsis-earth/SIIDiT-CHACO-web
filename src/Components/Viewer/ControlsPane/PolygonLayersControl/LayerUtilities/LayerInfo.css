@@ -1,4 +1,4 @@
-.layerInfoCard
+div.layerInfoCard
 {
 	position: absolute;
 	bottom: 0;
@@ -6,6 +6,8 @@
 	z-index: 9000;
 	margin: 1em;
 	max-width: 25vw;
+	max-height: 66vh;
+	overflow-y: auto;
 }
 
 .layerInfoCard h1
@@ -45,7 +47,7 @@ p.layerLabel
 }
 
 @media only screen and (max-width: 1200px) {
-	.layerInfoCard {
-		max-width: 50vw;
+	div.layerInfoCard {
+		max-width: 100vw;
 	}
 }
