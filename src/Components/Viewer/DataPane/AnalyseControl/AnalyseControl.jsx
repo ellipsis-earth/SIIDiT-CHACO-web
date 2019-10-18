@@ -163,10 +163,10 @@ class AnalyseControl extends PureComponent {
     }
     else {
       if (type === ViewerUtility.dataGraphType.classes) {
-        //this.setState({ classesLoading: false });
+        this.setState({ classesLoading: false });
       }
       else {
-        //this.setState({ measurementsLoading: false });
+        this.setState({ measurementsLoading: false });
       }
 
       return;
@@ -194,7 +194,7 @@ class AnalyseControl extends PureComponent {
         data.parsed = result;
 
         if (type === ViewerUtility.dataGraphType.classes) {
-          //this.setState({ classesData: data, classesLoading: false });
+          this.setState({ classesData: data, classesLoading: false });
         }
         else if (type === ViewerUtility.dataGraphType.measurements) {
           let newMeasurementsData = {
@@ -203,7 +203,7 @@ class AnalyseControl extends PureComponent {
 
           newMeasurementsData[className] = data;
 
-          //this.setState({ measurementsData: newMeasurementsData, measurementsLoading: false });
+          this.setState({ measurementsData: newMeasurementsData, measurementsLoading: false });
         }
       })
       .catch(err => {
@@ -214,7 +214,7 @@ class AnalyseControl extends PureComponent {
         };
 
         if (type === ViewerUtility.dataGraphType.classes) {
-          //this.setState({ classesData: data, classesLoading: false });
+          this.setState({ classesData: data, classesLoading: false });
         }
         else if (type === ViewerUtility.dataGraphType.measurements) {
           let newMeasurementsData = {
@@ -223,7 +223,7 @@ class AnalyseControl extends PureComponent {
 
           newMeasurementsData[className] = data;
           
-          //this.setState({ measurementsData: newMeasurementsData, measurementsLoading: false });
+          this.setState({ measurementsData: newMeasurementsData, measurementsLoading: false });
         }
       });
   }
