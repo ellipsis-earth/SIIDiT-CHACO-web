@@ -44,7 +44,14 @@ class InfoCards extends PureComponent {
       let text = [];
       for (var j = 0; j < Text[i].text.length; j++)
       {
-        text.push(<p key={Text[i].title + '_paragraph_' + j}>{Text[i].text[j]}</p>);
+        if (Text[i].text[j].type && Text[i].text[j].type === 'link')
+        {
+          text.push(<a key={Text[i].title + '_link_' + j} href={Text[i].text[j].url} target="_blank">{Text[i].text[j].url}</a>);
+        }
+        else
+        {
+          text.push(<p key={Text[i].title + '_paragraph_' + j}>{Text[i].text[j]}</p>);
+        }
       }
 
       infoCards.push(<InfoCard title={Text[i].title} text={text} open={open} onExpandClick={this.onExpandClick} key={Text[i].title + '_' + open}/>);

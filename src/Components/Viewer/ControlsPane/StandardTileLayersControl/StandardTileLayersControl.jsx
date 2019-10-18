@@ -21,7 +21,7 @@ import './StandardTileLayersControl.css';
 
 import ApiManager from '../../../../ApiManager';
 
-const STANDARD_TILES_LAYERS_DISPLAY_NAME = 'Tejas';
+const STANDARD_TILES_LAYERS_DISPLAY_NAME = 'Celdas';
 const STANDARD_TILES_LAYER = {
   type: STANDARD_TILES_LAYERS_DISPLAY_NAME,
   name: STANDARD_TILES_LAYERS_DISPLAY_NAME
@@ -302,7 +302,7 @@ class StandardTileLayersControl extends PureComponent {
           className='material-card-header'
           title={
             <Typography gutterBottom variant="h6" component="h2">
-              {'Tejas'}
+              {'Celdas'}
             </Typography>
           }
           action={

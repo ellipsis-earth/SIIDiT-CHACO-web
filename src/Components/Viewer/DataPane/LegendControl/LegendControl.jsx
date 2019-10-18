@@ -107,7 +107,7 @@ class LegendControl extends PureComponent {
       createLegendLines(availableMeasurements);
     }
     if (availablePolygonLayers.length > 0) {
-      legendElements.push(<div key='polygon_layers' className='legend-line legend-line-header'>{'Capas de poligonos'}</div>);
+      legendElements.push(<div key='polygon_layers' className='legend-line legend-line-header'>{'Capas de información'}</div>);
       createLegendLines(availablePolygonLayers);
     }
 

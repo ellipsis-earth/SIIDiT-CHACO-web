@@ -33,15 +33,16 @@ const Text = [
 			"El monitoreo de cambios de uso del suelo en el área del Gran Chaco Americano (GCA) es una iniciativa realizada por Guyra Paraguay desde el año 2010. En un esfuerzo por lograr la automatización del proceso de monitoreo que originalmente fuera realizado mediante interpretación visual a partir de imágenes satelitales y vectorización manual de los cambios de cobertura forestal, unimos experiencias con el equipo de Ellipsis Earth Intelligence y, aplicando metodologías de Inteligencia Artificial (IA) desarrollamos esta plataforma de monitoreo de cambios en las coberturas naturales del GCA que permite a los usuarios interactuar con la información de acuerdo a sus necesidades.",
 			"Los datos de monitoreo generados a lo largo de estos años han servido a instituciones de todos los sectores, y por sobre todo se ha constituido como una herramienta de información confiable y de calidad abierta y comprensible, generando incidencia en la ciudadanía y sirviendo a los tomadores de decisiones en el desempeño de sus funciones.",
 			"A lo largo de los años en que Guyra Paraguay ha venido monitoreando los cambios de uso del suelo en el gran Chaco, fueron varias las organizaciones que hicieron posible la elaboración y difusión de los resultados del monitoreo, mediante su apoyo técnico y financiero. De manera a reconocer su importante aporte y agradecerles se menciona a alguna de ellas: World Land Trust WLT, Iniciativa Redes Chaco – AVINA, Alianza Ecosistemas, el Programa WCS-USAID “Ka’aguy Reta: Bosques y Desarrollo”, Comité Holandés de la UICN, el Banco de Desarrollo de América Latina CAF, World Resource Institute y la Global Forest Watch.",
-			"La base de datos generada se encuentra aquí disponible para descarga y uso de la información."
+			"La base de datos generada se encuentra aquí disponible para descarga y uso de la información.",
+			{type: "link", url: 'http://guyra.org.py/informe-deforestacion'}
 		],
 		defaultOpen: false,
 	},
 	{
 		title: "Colofón",
 		text: [
-			"Co-authors: Guyra Paraguay - Ellipsis Earth Intelligence - IUCN NL",
-			"Partners: Consorcio PACHA: WWF Paraguay, IDEA (Instituto de Derecho y Economía Ambiental) y Guyra Paraguay"
+			"Co-autores: Guyra Paraguay - Ellipsis Earth Intelligence - IUCN NL",
+			"Organizaciones asociadas: Consorcio PACHA: WWF Paraguay, IDEA (Instituto de Derecho y Economía Ambiental) y Guyra Paraguay"
 		],
 		defaultOpen: false,
 	}

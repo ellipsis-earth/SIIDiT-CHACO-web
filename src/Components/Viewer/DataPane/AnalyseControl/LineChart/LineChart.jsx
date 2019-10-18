@@ -210,7 +210,7 @@ export class LineChart extends PureComponent {
 
     let yAxis = (
       <YAxis
-        key={'y_axis' + this.props.type + this.props.filter}
+        key={'y_axis_' + this.props.type + '_' +this.props.filter}
         attr="y"
         attrAxis="x"
         orientation="left"

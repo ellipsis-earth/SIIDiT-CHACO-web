@@ -135,8 +135,8 @@ class PolygonLayersControl extends PureComponent {
 
   createLayerCheckboxes = () => {
     let options = [
-      [<h3 key='Capas Detectada'>Capas Detectada</h3>, []],
-      [<h3 key='Capas de Deforestacion'>Capas de Deforestacion</h3>, []],
+      [<h3 key='Celdas con cambios detectados'>Celdas con cambios detectados</h3>, []],
+      [<h3 key='Capas de Cambio de Uso del Suelo'>Capas de Cambio de Uso del Suelo</h3>, []],
       [<h3 key='Capas de Información'>Capas de Información</h3>, []],
     ];
 

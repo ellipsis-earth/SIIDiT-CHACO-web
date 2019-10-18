@@ -91,17 +91,17 @@ export class TimestampSelector extends PureComponent {
     let dateText = null;
     if (this.props.map) {
       if (!this.state.range) {
-        dateText = this.state.dates[this.state.end];
+        dateText = Moment(this.state.dates[this.state.end]).format('DD-MM-YYYY');
       }
       else {
-        dateText = this.state.dates[this.state.start] + ' - ' + this.state.dates[this.state.end];
+        dateText = Moment(this.state.dates[this.state.start]).format('DD-MM-YYYY') + ' - ' + Moment(this.state.dates[this.state.end]).format('DD-MM-YYYY');
       }
     }
 
     return (
       <div className='timestamp-selector'>
         <div>
-          Marcas de tiempo
+          Marcas temporal
             <input type='checkbox' id='timestamp-range' onChange={this.onRangeToggleChange} checked={this.state.range}/>
           Intervalo
         </div>

@@ -192,7 +192,7 @@ class GeoMessageControl extends PureComponent {
 
 
 
-    if (element.type === ViewerUtility.standardTileLayerType || element.filter.type === 'tile') {
+    if (element && element.type === ViewerUtility.standardTileLayerType || element.filter && element.filter.type === 'tile') {
       body.tileIds = [{
         tileX: elementProperties.tileX,
         tileY: elementProperties.tileY,

@@ -21,7 +21,7 @@ import './TileLayersControl.css';
 
 import ApiManager from '../../../../ApiManager';
 
-const BASE_SATELLITE_LAYER_NAME = 'base';
+const BASE_SATELLITE_LAYER_NAME = 'Base';
 const IMAGES_TILE_LAYER_NAME = 'images';
 const LABELS_TILE_LAYER_NAME = 'labels';
 const IMAGES2_TILE_LAYER_NAME = 'images2';
@@ -186,6 +186,10 @@ class TileLayersControl extends PureComponent {
       let availableLayer = availableLayers[i];
       let checked = selectedLayers.find(x => x === availableLayer) ? true : false;
 
+      if (availableLayer.name === 'rgb'){availableLayer.displayName = 'RGB'}
+      else if (availableLayer.name === 'label'){availableLayer.displayName = 'Clasificación'}
+      else {availableLayer.displayName = availableLayer.name}
+
       let option = (
         <div key={availableLayer.name}>
           <FormControlLabel
@@ -199,7 +203,7 @@ class TileLayersControl extends PureComponent {
                 onChange={this.onLayerChange}
                 checked={checked}
               />}
-            label = {availableLayer.name} />
+            label = {availableLayer.displayName} />
         </div>
       )
 
