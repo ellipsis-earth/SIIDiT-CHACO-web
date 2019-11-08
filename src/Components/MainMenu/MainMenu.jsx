@@ -105,17 +105,15 @@ export class MainMenu extends Component {
           onToggle={this.onToggle}
         >
           <Navbar.Brand>
-            <NavLink exact to='/' className='main-menu-logo-item noselect' onClick={() => this.onNavItemClick('home')}>
+            <NavLink exact to='/' className='main-menu-logo-item noselect' onClick={() => {this.props.openAccounts(false); this.onNavItemClick('home')}}>
               <img className='main-menu-logo' src='/images/logos/logo_horizontal.svg' alt='SIIDiT - CHACO'/>
             </NavLink>
           </Navbar.Brand>
             <Nav>
               <NavItem>
-                <NavLink to={this.props.user ? '/account': '/login'} onClick={() => this.onNavItemClick(navKeys.login)}>
-                  <ToggleButton selected={navItemClass(navKeys.login)} value={this.props.user ? this.props.user.username : 'Login'}>
-                    {this.props.user ? this.props.user.username : 'Iniciar'}
-                  </ToggleButton>
-                </NavLink>
+                <ToggleButton selected={navItemClass(navKeys.login)} value={this.props.user ? this.props.user.username : 'Login'} onClick={() => this.props.openAccounts()}>
+                  {this.props.user ? this.props.user.username : 'Login'}
+                </ToggleButton>
               </NavItem>
             </Nav>
         </Navbar>

@@ -46,16 +46,45 @@ class App extends Component {
     this.state = {
       init: false,
       user: null,
+      accountOpen: false,
     };
+
+    this.accountsUrl = 'https://account.ellipsis-earth.com/';
   }
 
   componentDidMount() {
     Modal.setAppElement('body');
 
+    window.addEventListener("message", this.receiveMessage, false);
+        
+    return this.retrieveUser();
+  }
 
+  receiveMessage = (event) => {
+    if (/*event.origin === 'http://localhost:3000' ||*/ 'https://account.ellipsis-earth.com') 
+    {
+      if (event.data.type && event.data.type === 'login')
+      {
+        this.onLogin(event.data.data);
+      }
+      if (event.data.type && event.data.type === 'logout')
+      {
+        this.onLogout();
+      }
+      if (event.data.type && event.data.type === 'overlayClose')
+      {
+        this.setState({accountOpen: false}, this.setHome())
+      }
+    }
+  }
 
-        return this.retrieveUser();
-    
+  setHome = () => {
+    let iframe = document.getElementById("account");
+    iframe.contentWindow.postMessage({type: 'home'}, this.accountsUrl);
+  }
+
+  openAccounts = (open = !this.state.accountOpen) => {
+    this.setState({accountOpen: open})
   }
 
   closeMenu = () => {
@@ -88,10 +117,6 @@ class App extends Component {
       });
   }
 
-
-
-
-
   scrollToBottom = () => {
     this.bottomItemRef.current.scrollIntoView({ behavior: 'smooth' });
   }
@@ -119,18 +144,26 @@ class App extends Component {
       return null;
     }
 
+    if (this.state.accountOpen)
+    {
+      let initObject = {type: 'init'};
+      if (this.state.user){initObject.data = this.state.user}
+      let iframe = document.getElementById("account");
+      iframe.contentWindow.postMessage(initObject, this.accountsUrl);
+    }
+
     let contentClassName = 'content';
 
     return (
       <div className='App' onClick={this.closeMenu}>
         <ThemeProvider theme={theme}>
             {
-                <MainMenu
-                  user={this.state.user}
-                  onLanguageChange={this.onLanguageChange}
-                  scrollToBottom={this.scrollToBottom}
-                />
-
+              <MainMenu
+                user={this.state.user}
+                onLanguageChange={this.onLanguageChange}
+                scrollToBottom={this.scrollToBottom}
+                openAccounts={this.openAccounts}
+              />
             }
             <div className={contentClassName}>
               <div ref={this.topItemRef}></div>
@@ -139,6 +172,7 @@ class App extends Component {
                   <Viewer
                     user = {this.state.user}
                     scrollToBottom={this.scrollToBottom}
+                    key={this.state.user ? this.state.user.name : 'default'}
                   />
                 }
               />
@@ -159,6 +193,9 @@ class App extends Component {
                   />
                 }
               />
+              <div className={this.state.accountOpen ? 'account' : 'hidden'}>
+                <iframe src={this.accountsUrl} id='account'/>
+              </div>
               <div ref={this.bottomItemRef}></div>
             </div>
 
