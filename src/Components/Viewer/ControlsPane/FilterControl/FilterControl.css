@@ -1,0 +1,25 @@
+.layers-control  label.MuiFormControlLabel-root.filterHeader span.MuiFormControlLabel-label
+{
+	padding-top: 9px;
+}
+
+.filterRadio
+{
+	padding-left: 5px;
+}
+
+.MuiFormControl-root.filterNameInput, .MuiButtonBase-root.filterButton
+{
+	margin-left: 42px;
+	margin-bottom: 15px;
+}
+
+.MuiButtonBase-root.filterButton
+{
+	margin-top: 5px;
+}
+
+.filterLoadingSpinner
+{
+	margin-right: 10px;
+}

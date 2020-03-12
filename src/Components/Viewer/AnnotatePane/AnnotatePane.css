@@ -1,0 +1,275 @@
+.annotate-init {
+  position: absolute;
+  width: 100%;
+  top: 40vh;
+}
+
+.annotate-init-group {
+  margin-top: 8px;
+  margin-bottom: 64px;
+}
+
+.annotate-init button {
+  width: 200px;
+}
+
+.annotate-init button:nth-of-type(1) {
+  margin-right: 10px;
+}
+
+.annotate-init button:nth-of-type(2) {
+  margin-left: 10px;
+}
+
+.annotate-toolbar {
+  position: fixed;
+  top: 20vh;
+  left: 10vw;
+  width: 50px;
+  height: 500px;
+}
+
+.annotate-toolbar button {
+  width: 100%;
+}
+
+.annotate-toolbar button.text-button {
+  padding: 6px;
+}
+
+.annotate-toolbar .nav-item {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #808080
+}
+
+.annotate-toolbar .nav-item:not(:first-of-type) {
+  margin-top: -1px;
+}
+
+.annotate-toolbar .nav-item:not(:first-of-type) {
+  margin-top: -1px;
+}
+
+.annotate-toolbar .tool-button {
+  border-radius: 0%;
+}
+
+.annotate-subtoolbar {
+  left: calc(10vw + 50px);
+  text-align: left;
+  width: auto;
+  height: 506px;
+  overflow: auto;
+}
+
+.annotate-subtoolbar .nav-item {
+  width: auto;
+  border: 1px solid #808080;
+  text-align: center;
+}
+
+.annotate-subtoolbar .tool-button {
+  font-size: 16px;
+}
+
+.labelTool
+{
+  height: 100%;
+  pointer-events: all;
+}
+
+.canvas {
+  position: fixed;
+  width: calc(100vh - 96px);
+  height: calc(100vh - 96px);
+  /*max-height: 100vh;*/
+  top: calc(50% - 48px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: auto;
+  margin: 10px;
+}
+
+.layers {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+#canvases {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.stepperContainer
+{
+  position: absolute;
+  bottom: 48px;
+  width: 100%;
+}
+
+.stepperContainer .stepperInfoItem
+{
+  font-size: 87.5%;
+}
+
+.stepperContainer .stepperInfoItem+.stepperInfoItem
+{
+  margin-left: 1em;
+}
+
+#layer-upper {
+	opacity: 0.7;
+}
+
+#layer-temp {
+  opacity: 0.7;
+}
+
+.labelToolToolbar
+{
+  overflow: hidden;
+  z-index: 10000000;
+}
+
+.labelToolToolbar .selected
+{
+  box-shadow: inset 0px 0px 20px 20px #0264641a;
+}
+
+.labelToolToolbar .MuiExpansionPanel-root:before, .labelToolToolbar .MuiExpansionPanel-root:after
+{
+  display: none;
+}
+
+.labelToolToolbar .MuiExpansionPanel-root
+{
+  pointer-events: none;
+  width: 50px;
+}
+
+.labelToolToolbar.toolbarExpanded .MuiExpansionPanel-root
+{
+  width: 150px;
+}
+
+.labelToolToolbar .MuiExpansionPanel-root button
+{
+  pointer-events: initial;
+}
+
+.labelToolToolbar .MuiExpansionPanelSummary-root
+{
+  padding: 5px;
+  min-height: 60px;
+}
+
+.labelToolToolbar .MuiExpansionPanelSummary-root.Mui-expanded
+{
+  min-height: 60px;
+}
+
+.labelToolToolbar .MuiExpansionPanelSummary-content, .labelToolToolbar .MuiExpansionPanelDetails-root, .labelToolToolbar .zoom
+{
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+}
+
+.labelToolToolbar.toolbarExpanded .MuiExpansionPanelSummary-content
+{
+  align-items: flex-start;
+}
+
+.labelToolToolbar .MuiExpansionPanelDetails-root
+{
+  padding: 5px;
+  background-color: #f2f2f2;
+}
+
+.labelToolToolbar .MuiExpansionPanel-root.Mui-expanded, .labelToolToolbar .MuiExpansionPanelSummary-content.Mui-expanded, .labelToolToolbar .MuiExpansionPanelSummary-content
+{
+  margin: 0;
+  width: 100%;
+}
+
+.labelToolToolbar .zoom
+{
+  min-height: 120px;
+}
+
+.labelToolToolbar .zoom button+button
+{
+  margin-top: 10px;
+}
+
+.labelToolToolbar .layersSelector .MuiExpansionPanelDetails-root
+{
+  min-height: 120px;
+}
+
+.labelToolToolbar .drawerPaper
+{
+  height: auto;
+  position: initial;
+  width: fit-content;
+  flex-wrap: wrap;
+  max-height: calc(95vh - 45px);
+  overflow: initial;
+}
+
+.labelToolToolbar span.size
+{
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+.labelToolToolbar .MuiFab-extended.MuiFab-sizeSmall
+{
+  height: 40px;
+  border-radius: 50px;
+}
+
+.labelToolToolbar .toolButtonContainer
+{
+  width: 100%;
+}
+
+/*.labelToolToolbar.toolbarExpanded .brushSize
+{
+  flex-direction: row;
+}*/
+
+.labelToolToolbar .toolButtonContainer button.toolbarButtonLabel
+{
+  width: calc(100% - 40px);
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  text-align: left;
+  font-size: 75%;
+  padding: 0;
+  padding-left: 10px;
+  margin: 0;
+  color: #026464;
+}
+
+div.MuiTooltip-popper
+{
+  z-index: 10000000;
+}
+
+.classesGrid
+{
+  display: grid;
+  max-width: 20vw;
+  grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+}

@@ -1,26 +1,28 @@
 import React, { PureComponent } from 'react';
+import { Redirect } from 'react-router';
 
-import {
-  Card,
-  Button,
-  CardHeader,
-  CardContent,
-  CardActions,
-  IconButton,
-  Typography,
-  CircularProgress
-} from '@material-ui/core';
+import Card from '@material-ui/core/Card'
+import Button from '@material-ui/core/Button'
+import CardHeader from '@material-ui/core/CardHeader'
+import CardContent from '@material-ui/core/CardContent'
+import CardActions from '@material-ui/core/CardActions'
+import IconButton from '@material-ui/core/IconButton'
+import Typography from '@material-ui/core/Typography'
+import CircularProgress from '@material-ui/core/CircularProgress'
+
 import ClearIcon from '@material-ui/icons/Clear';
 import SaveAlt from '@material-ui/icons/SaveAlt';
+
+import AnnotatePane from '../AnnotatePane/AnnotatePane';
 
 import ViewerUtility from '../ViewerUtility';
 
 import './SelectionPane.css';
 import ApiManager from '../../../ApiManager';
 
-import { Redirect } from 'react-router';
 
 const DELETE_CUSTOM_POLYGON_ACTION = 'delete_custom_polygon';
+const ANNOTATE_ACTION = 'annotate';
 
 class SelectionPane extends PureComponent {
 
@@ -32,16 +34,42 @@ class SelectionPane extends PureComponent {
       loading: false,
       redirect: false,
     };
+
+    this.filterInformation = ["bfe00499-c9f4-423f-b4c6-9adfd4e91d1e", "963c2e9f-068a-4213-8cb7-cf336c57d40e", "7373e49b-dae5-48e0-b937-7ee07a9d5cb2", "e56e3079-a0e1-4e44-8aef-219dde0cb850", "e3fa7c52-f02c-4977-bdd9-33b250da9b33", "5410fdcd-6b17-414c-8be3-c973db5bd0f9", "e99121e1-9d6e-4bfb-94b6-0b8ca1492ff3", "5e45ea5c-1f1c-47bf-9309-12316200cf61"];
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     if (!this.props.map || prevProps.map !== this.props.map || !this.props.element) {
       this.setState({ isOpen: false });
     }
     else if (prevProps.element !== this.props.element) {
       this.props.closePanes('selection');
-      this.setState({ isOpen: true });
+      if(this.props.element && this.props.element.type === ViewerUtility.standardTileLayerType)
+      {
+        this.setState({isOpen: true, tileInfo: await this.getInfo()});
+      }
+      else
+      {
+        this.setState({isOpen: true});
+      }
     }
+  }
+
+  getInfo = async () => {
+    let body = {
+      mapId: this.props.map.id,
+      tileId: this.props.element.feature.properties,
+      timestamp: this.props.timestampRange.end
+    };
+
+    return await ApiManager.post('/raster/info', body, this.props.user, 'v2')
+    .then((info) => {
+      let filter = info.filter(version => version.band === 'label');
+      return filter;
+    })
+    .catch(err => {
+      console.error(err)
+    });
   }
 
   open = () => {
@@ -84,6 +112,9 @@ class SelectionPane extends PureComponent {
     if (action === DELETE_CUSTOM_POLYGON_ACTION) {
       this.deleteCustomPolygon();
     }
+    else if (action === ANNOTATE_ACTION) {
+      this.setState({ annotate: true });
+    }
     else {
       this.props.onDataPaneAction(action);
     }
@@ -125,6 +156,10 @@ class SelectionPane extends PureComponent {
     };
 
     ViewerUtility.download(fileName, JSON.stringify(geoJson), 'application/json');
+  }
+
+  onAnnotatePaneClose = () => {
+    this.setState({ annotate: false });
   }
 
   render() {
@@ -181,6 +216,19 @@ class SelectionPane extends PureComponent {
 
     if (element.type === ViewerUtility.standardTileLayerType || (element.filter && element.filter.type === 'tile')) {
       title = 'Teja';
+      if (user)
+      {
+        secondRowButtons.push(<Button
+            key='edit'
+            variant='outlined'
+            size='small'
+            className='selection-pane-button'
+            onClick={() => this.onElementActionClick(ANNOTATE_ACTION)}
+            disabled={mapAccessLevel < ApiManager.accessLevels.submitRasterData}
+          >
+            ANNOTATE
+          </Button>)
+      }
     }
     else if (element.type === ViewerUtility.polygonLayerType) {
       title = 'Polígono';
@@ -191,7 +239,8 @@ class SelectionPane extends PureComponent {
 
       if (user)
       {
-        if (!element.filter)
+        let layer = this.props.map.layers.polygon.find(x => x.name === element.feature.properties.layer);
+        if (!element.filter && !(layer && this.filterInformation.includes(layer.id)))
         {
           secondRowButtons.push(
             <Button
@@ -283,50 +332,63 @@ class SelectionPane extends PureComponent {
     }
 
     return (
-      <Card className={selectionPaneClass}>
-        <CardHeader
-          className='material-card-header'
-          title={
-            <Button
-              onClick={() => this.props.onFlyTo({
-                type: ViewerUtility.flyToType.currentElement
-              })}
-            >
-              <Typography variant="h6" component="h2" className='no-text-transform'>
-                {title}
-              </Typography>
-            </Button>
-          }
-          action={
-            <div>
-              <IconButton
-                onClick={this.onDownload}
-                aria-label='Download'
+      <div>
+        {this.state.annotate && this.props.map.accessLevel >= 515 ?
+          <AnnotatePane
+            map={this.props.map}
+            user={this.props.user}
+            tileId={this.props.element.feature.properties}
+            timestamp={this.props.timestampRange.end}
+            onClose={this.onAnnotatePaneClose}
+            tileInfo={this.state.tileInfo}
+          /> : null
+        }
+
+        <Card className={selectionPaneClass}>
+          <CardHeader
+            className='material-card-header'
+            title={
+              <Button
+                onClick={() => this.props.onFlyTo({
+                  type: ViewerUtility.flyToType.currentElement
+                })}
               >
-                <SaveAlt />
-              </IconButton>
-              <IconButton
-                onClick={this.onCloseClick}
-                aria-label='Close'
-              >
-                <ClearIcon />
-              </IconButton>
+                <Typography variant="h6" component="h2" className='no-text-transform'>
+                  {title}
+                </Typography>
+              </Button>
+            }
+            action={
+              <div>
+                <IconButton
+                  onClick={this.onDownload}
+                  aria-label='Download'
+                >
+                  <SaveAlt />
+                </IconButton>
+                <IconButton
+                  onClick={this.onCloseClick}
+                  aria-label='Close'
+                >
+                  <ClearIcon />
+                </IconButton>
+              </div>
+            }
+          />
+          <CardContent className={'card-content'}>
+            {properties}
+            { this.state.loading ? <CircularProgress className='loading-spinner'/> : null}
+          </CardContent>
+          <CardActions className={'selection-pane-card-actions'}>
+            <div key='first_row_buttons'>
+              {firstRowButtons}
             </div>
-          }
-        />
-        <CardContent className={'card-content'}>
-          {properties}
-          { this.state.loading ? <CircularProgress className='loading-spinner'/> : null}
-        </CardContent>
-        <CardActions className={'selection-pane-card-actions'}>
-          <div key='first_row_buttons'>
-            {firstRowButtons}
-          </div>
-          <div key='secont_row_buttons' style={ {marginLeft: '0px' }}>
-            {secondRowButtons}
-          </div>
-        </CardActions>
-      </Card>
+            <div key='secont_row_buttons' style={ {marginLeft: '0px' }}>
+              {secondRowButtons}
+            </div>
+          </CardActions>
+        </Card>
+      </div>
     );
   }
 }

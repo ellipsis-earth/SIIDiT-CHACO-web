@@ -343,7 +343,7 @@ class TileLayersControl extends PureComponent {
     }
 
     return (
-      <Card className='layers-contol'>
+      <Card className='layers-control'>
         <CardHeader
           className='material-card-header'
           title={

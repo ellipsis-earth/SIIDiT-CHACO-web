@@ -3,8 +3,10 @@ import React, { PureComponent } from 'react';
 import MapSelector from './MapSelector/MapSelector';
 import FlyToControl from './FlyToControl/FlyToControl'
 import TileLayersControl from './TileLayersControl/TileLayersControl';
-import StandardTileLayersControl from './StandardTileLayersControl/StandardTileLayersControl';
+/*import StandardTileLayersControl from './StandardTileLayersControl/StandardTileLayersControl';*/
 import PolygonLayersControl from './PolygonLayersControl/PolygonLayersControl';
+import FilterControl from './FilterControl/FilterControl';
+
 import ViewerUtility from '../ViewerUtility';
 
 import './ControlsPane.css';
@@ -26,6 +28,7 @@ class ControlsPane extends PureComponent {
 
     this.standardTileLayersControl = React.createRef();
     this.polygonLayersControl = React.createRef();
+    this.filterControl = React.createRef();
 
     this.state = {
       map: null
@@ -118,8 +121,19 @@ class ControlsPane extends PureComponent {
           getLayerInfoContent={this.props.getLayerInfoContent}
         />
 
-        <StandardTileLayersControl
+        {/*<StandardTileLayersControl
           ref={this.standardTileLayersControl}
+          user={this.props.user}
+          map={this.state.map}
+          leafletMapViewport={this.props.leafletMapViewport}
+          timestampRange={this.props.timestampRange}
+          override={this.props.override}
+          onLayersChange={(layers) => this.onLayersChange(ViewerUtility.standardTileLayerType, layers)}
+          onFeatureClick={(feature) => this.props.onFeatureClick(ViewerUtility.standardTileLayerType, feature, true)}
+        />*/}
+
+        <FilterControl
+          ref={this.filterControl}
           user={this.props.user}
           map={this.state.map}
           leafletMapViewport={this.props.leafletMapViewport}

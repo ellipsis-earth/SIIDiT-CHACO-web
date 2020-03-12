@@ -115,6 +115,7 @@ export class MapSelector extends PureComponent {
 
     let classesPromise = ApiManager.post('/metadata/classes', body, this.props.user);
     let measurementsPromise = ApiManager.post('/metadata/measurements', body, this.props.user);
+    let modelPromise = ApiManager.post('/metadata', { mapId: map.id, type: 'model' }, this.props.user, 'v2');
     let formsPromise = null;
     if (map.accessLevel >= ApiManager.accessLevels.viewGeoMessages) {
       formsPromise = ApiManager.post('/geomessage/forms/get', body, this.props.user);
@@ -127,6 +128,7 @@ export class MapSelector extends PureComponent {
 
       classesPromise,
       measurementsPromise,
+      modelPromise,
       formsPromise
     ];
 
@@ -140,8 +142,9 @@ export class MapSelector extends PureComponent {
 
         map.classes = results[3];
         map.measurements = results[4];
-        if (results[5]) {
-          map.forms = results[5]
+        map.model = results[5];
+        if (results[6]) {
+          map.forms = results[6]
         }
 
         map.metadataLoaded = true;

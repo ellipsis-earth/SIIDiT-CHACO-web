@@ -25,7 +25,7 @@ div.content {
 .viewer-menu-button-content {
   position: relative;
   top: 50%;
-  transform: translateY(-50%); 
+  transform: translateY(-50%);
 }
 
 .viewer-menu > div {
@@ -110,11 +110,30 @@ div.selector-single {
   padding-top: 0px;
 }
 
+.viewer-modal {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  z-index: 9999999;
+}
+
+.viewer-modal-close {
+  position: fixed;
+  top: 50px;
+  right: 60px;
+  width: 50px;
+  height: 50px;
+}
+
 @media only screen and (max-width: 700px) {
   .controls-pane {
     width: 100vw;
   }
-  
+
   .data-pane {
     width: 100vw;
   }

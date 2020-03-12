@@ -27,7 +27,7 @@ const STANDARD_TILES_LAYER = {
   name: STANDARD_TILES_LAYERS_DISPLAY_NAME
 };
 
-const MAX_TILES = 500;
+const MAX_TILES = 3000;
 
 class StandardTileLayersControl extends PureComponent {
 
@@ -297,7 +297,7 @@ class StandardTileLayersControl extends PureComponent {
     }
 
     return (
-      <Card className='layers-contol'>
+      <Card className='layers-control'>
         <CardHeader
           className='material-card-header'
           title={

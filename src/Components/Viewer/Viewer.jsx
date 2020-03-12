@@ -662,6 +662,7 @@ class Viewer extends PureComponent {
               ref={this.selectionPane}
               user={this.props.user}
               map={this.state.map}
+              timestampRange={this.state.timestampRange}
               element={this.state.selectedElement}
               onDataPaneAction={this.onDataPaneAction}
               onFlyTo={this.onFlyTo}
@@ -684,7 +685,7 @@ class Viewer extends PureComponent {
               <LayerInfoCard
                 content={this.state.layerInfoContent.content}
                 random={this.state.layerInfoContent.random}
-                ref={this.layerInfoCard} 
+                ref={this.layerInfoCard}
                 closePanes={this.closePanes}
                 openPane={this.openPane}
                 paneName={CONTROL_PANE_NAME}

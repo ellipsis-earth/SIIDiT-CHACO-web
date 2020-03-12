@@ -1,19 +1,23 @@
 import React, { PureComponent } from 'react';
 
-import { 
-  Card,  
-  CardHeader,
-  CardContent,
-  Typography,
-  CircularProgress,
-  Button,
-  Select,
-  MenuItem,
-  Collapse,
-  IconButton,
-  TextField,
-  Checkbox
-} from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Collapse from '@material-ui/core/Collapse';
+import IconButton from '@material-ui/core/IconButton';
+import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
+
+import moment from 'moment';
+import MomentUtils from '@date-io/moment';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+
+
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import Utility from '../../../../Utility';
@@ -23,6 +27,8 @@ import DataPaneUtility from '../DataPaneUtility';
 import './CustomPolygonControl.css';
 import ApiManager from '../../../../ApiManager';
 
+const DATE_FORMAT = 'YYYY-MM-DD';
+
 class CustomPolygonControl extends PureComponent {
 
   constructor(props, context) {
@@ -31,7 +37,7 @@ class CustomPolygonControl extends PureComponent {
     this.state = {
       loading: false,
 
-      selectedLayer: 'default',
+      selectedLayer: 'c8511879-1551-4e2c-b03d-7e9c9d3272c9',
       propertyValues: {},
     };
   }
@@ -50,7 +56,7 @@ class CustomPolygonControl extends PureComponent {
 
     if (differentMap) {
       this.setState({
-        selectedLayer: 'default',
+        selectedLayer: 'c8511879-1551-4e2c-b03d-7e9c9d3272c9',
         propertyValues: {}
       });
       return;
@@ -73,7 +79,7 @@ class CustomPolygonControl extends PureComponent {
   initialize = () => {
     if (!this.props.isEdit) {
       this.setState({
-        selectedLayer: 'default',
+        selectedLayer: 'c8511879-1551-4e2c-b03d-7e9c9d3272c9',
         propertyValues: {}
       });
     }
@@ -101,7 +107,19 @@ class CustomPolygonControl extends PureComponent {
     let newPropertyValues = {
       ...this.state.propertyValues
     };
-    newPropertyValues[property] = e.target.value;
+
+    let value = null;
+
+    if (property === 'date')
+    {
+      value = moment(e).format(DATE_FORMAT);
+    }
+    else
+    {
+      value = e.target.value;
+    }
+
+    newPropertyValues[property] = value;
 
     this.setState({ propertyValues: newPropertyValues });
   }
@@ -125,20 +143,32 @@ class CustomPolygonControl extends PureComponent {
     let feature = this.props.element.feature;
     feature.properties = this.state.propertyValues;
 
-    let timestampNumber = this.props.map.timestamps[this.props.timestampRange.end].timestampNumber;
+    console.log(this.props.map.timestamps, this.state.propertyValues)
+    let date = this.state.propertyValues.date ? this.state.propertyValues.date : moment().format(DATE_FORMAT);
+    //Check for timestamp closest to given date
+    let timestampNumber = this.props.map.timestamps[this.props.map.timestamps.length - 1].timestampNumber;
+
+    for (let i = 0; i < this.props.map.timestamps.length; i++) {
+      if(!moment(this.props.map.timestamps[i].dateTo).isBefore(date))
+      {
+        timestampNumber = i === 0 ? -1 : this.props.map.timestamps[i - 1].timestampNumber;
+      }
+    }
+
+    console.log(this.props.map);
 
     let body = {
       mapId: this.props.map.id,
       timestamp: timestampNumber,
-      layer: layer,
+      layer: layer === -1 ? '09834825-403d-4e5b-9883-ac1bff14ae1f' : layer,
       feature: feature
     };
 
-    ApiManager.post('/geometry/addPolygon', body, this.props.user)
+    /*ApiManager.post('/geometry/addPolygon', body, this.props.user)
       .then(() => {
         alert('Polygon received. It can take a few moments before it is visible.');
 
-        this.props.onPolygonChange(true, false);        
+        this.props.onPolygonChange(true, false);
         this.setState({
           loading: false,
           propertyValues: {}
@@ -147,10 +177,10 @@ class CustomPolygonControl extends PureComponent {
       .catch(err => {
         if (err && err.status === 400) {
           alert(err.message);
-        } 
+        }
         console.log(err);
         this.setState({ loading: false });
-      });
+      });*/
   }
 
   editCustomPolygon = () => {
@@ -162,7 +192,7 @@ class CustomPolygonControl extends PureComponent {
     ).properties;
 
     for (let prop in properties) {
-      if (Object.prototype.hasOwnProperty.call(properties, prop) && 
+      if (Object.prototype.hasOwnProperty.call(properties, prop) &&
         !selectedLayerProperties.includes(prop)) {
         delete properties[prop];
       }
@@ -202,8 +232,8 @@ class CustomPolygonControl extends PureComponent {
       title = 'Edit';
     }
 
-    let layerSelect = null;
     let layers = this.props.map.layers.polygon;
+    /*let layerSelect = null;
     if (layers.length > 0) {
       let options = [
         <MenuItem key='default' value='default' disabled hidden>Select a layer</MenuItem>
@@ -211,6 +241,7 @@ class CustomPolygonControl extends PureComponent {
 
       for (let i = 0; i < layers.length; i++) {
         let layer = layers[i];
+        console.log(layer.id === 'c8511879-1551-4e2c-b03d-7e9c9d3272c9');
 
         let filter = ['b4cfa212-9547-4d43-9119-1db5482954a3', '647c9802-f136-4029-aa6d-884396be4e9b'];
 
@@ -225,10 +256,10 @@ class CustomPolygonControl extends PureComponent {
       }
 
       layerSelect = (
-        <Select 
-          key='layer-selector' 
-          className='selector' 
-          onChange={this.onSelectLayer} 
+        <Select
+          key='layer-selector'
+          className='selector'
+          onChange={this.onSelectLayer}
           value={this.state.selectedLayer}
         >
           {options}
@@ -237,10 +268,10 @@ class CustomPolygonControl extends PureComponent {
     }
     else {
       layerSelect = 'No layers available.'
-    }
+    }*/
 
     let propertyInputs = null;
-    let selectedLayer = layers.find(x => x.name === this.state.selectedLayer)
+    let selectedLayer = layers.find(x => x.id === this.state.selectedLayer)
 
     if (selectedLayer) {
       let inputs = [];
@@ -248,24 +279,43 @@ class CustomPolygonControl extends PureComponent {
       for (let i = 0; i < selectedLayer.properties.length; i++) {
         let property = selectedLayer.properties[i];
 
-        inputs.push(
-          <TextField
-            className='card-content-item data-pane-text-field'
-            key={property}
-            label={property}
-            value={this.state.propertyValues[property]}
-            onChange={(e) => this.onPropertyValueChange(e, property)}
-          />
-        ); 
+        if(property === 'date')
+        {
+          inputs.push(
+            <MuiPickersUtilsProvider utils={MomentUtils} key={property}>
+              <KeyboardDatePicker
+                margin="normal"
+                label={property}
+                format={DATE_FORMAT}
+                value={this.state.propertyValues[property] ? this.state.propertyValues[property] : moment(this.props.map.timestamps.find(x => x.timestampNumber === this.props.timestampRange.end).dateTo).format(DATE_FORMAT)}
+                onChange={(e) => this.onPropertyValueChange(e, property)}
+                DialogProps={{style:{zIndex: 2500}}}
+                disableFuture
+              />
+            </MuiPickersUtilsProvider>
+          );
+        }
+        else
+        {
+          inputs.push(
+            <TextField
+              className='card-content-item data-pane-text-field'
+              key={property}
+              label={property}
+              value={this.state.propertyValues[property]}
+              onChange={(e) => this.onPropertyValueChange(e, property)}
+            />
+          );
+        }
       }
 
       propertyInputs = (
         <div>
           {inputs}
           <div className='card-content-item'>
-            <Button 
+            <Button
               className='card-submit-button'
-              variant='contained' 
+              variant='contained'
               color='primary'
               onClick={this.onSubmit}
               disabled={this.state.loading}
@@ -275,7 +325,7 @@ class CustomPolygonControl extends PureComponent {
           </div>
 
         </div>
-      );       
+      );
     }
 
     return (
@@ -290,11 +340,11 @@ class CustomPolygonControl extends PureComponent {
             }
           />
           <CardContent>
-            {layerSelect}
+            {/*layerSelect*/}
             {propertyInputs}
             { this.state.loading ? <CircularProgress className='loading-spinner'/> : null}
           </CardContent>
-          
+
         </Card>
       </div>
     );
