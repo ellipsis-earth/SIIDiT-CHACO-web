@@ -311,11 +311,11 @@ class PolygonLayersControl extends PureComponent {
       let filter = null;
       let type = 'polygon';
 
-      if (this.filterDetectada.includes(polygonLayer.id))
+      /*if (this.filterDetectada.includes(polygonLayer.id))
       {
         filter = this.filterProps[polygonLayer.id]
         type = filter.type;
-      }
+      }*/
 
       let leafletGeojsonLayerPromise = this.getIds(map, timestampRange, polygonLayer, bounds, filter)
         .then(polygonIds => {
