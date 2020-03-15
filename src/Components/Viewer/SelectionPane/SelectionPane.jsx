@@ -108,12 +108,47 @@ class SelectionPane extends PureComponent {
     this.setState({ isOpen: false });
   }
 
-  onElementActionClick = (action) => {
+  onElementActionClick = (action, type = null) => {
     if (action === DELETE_CUSTOM_POLYGON_ACTION) {
       this.deleteCustomPolygon();
     }
     else if (action === ANNOTATE_ACTION) {
       this.setState({ annotate: true });
+    }
+    else if (action === ViewerUtility.dataPaneAction.editCustomPolygon && type !== 'EDITAR')
+    {
+      let oldProperties = this.props.element.feature.properties;
+      let newProperties = JSON.parse(JSON.stringify(this.props.element.feature.properties));
+      delete newProperties.id;
+      delete newProperties.layer;
+      delete newProperties.user;
+
+      let id = 'c8511879-1551-4e2c-b03d-7e9c9d3272c9';
+      if(type === 'retractar')
+      {
+        id = 'b4cfa212-9547-4d43-9119-1db5482954a3'
+      }
+
+      let newLayer = this.props.map.layers.polygon.find(x => x.id === id);
+
+      let body = {
+        mapId: this.props.map.id,
+        polygonId: oldProperties.id,
+        newLayerName: newLayer.name,
+        newProperties: newProperties,
+      };
+
+      ApiManager.post('/geometry/alter', body, this.props.user, 'v2')
+      .then(() => {
+        newProperties.layer = newLayer.name;
+        newProperties.id = oldProperties.id;
+        //newProperties.user = oldProperties.user;
+
+        this.props.onPolygonChange(false, true, newProperties);
+      })
+      .catch(err => {
+        console.error(err);
+      });
     }
     else {
       this.props.onDataPaneAction(action);
@@ -147,7 +182,7 @@ class SelectionPane extends PureComponent {
       nameComponents.push('drawnPolygon');
     }
 
-    let fileName = nameComponents.join('_').replace(' ', '_') + '.geojson';
+    let fileName = nameComponents.join('_').replace(' ', '_') + '.kml';
 
     let geoJson = {
       type: 'FeatureCollection',
@@ -155,7 +190,7 @@ class SelectionPane extends PureComponent {
       features: [feature]
     };
 
-    ViewerUtility.download(fileName, JSON.stringify(geoJson), 'application/json');
+    ViewerUtility.download(fileName, JSON.stringify(geoJson), 'application/vnd.google-earth.kml+xml');
   }
 
   onAnnotatePaneClose = () => {
@@ -242,16 +277,28 @@ class SelectionPane extends PureComponent {
         let layer = this.props.map.layers.polygon.find(x => x.name === element.feature.properties.layer);
         if (!element.filter && !(layer && this.filterInformation.includes(layer.id)))
         {
+          console.log(layer);
+
+          let editType = 'EDITAR';
+          if(layer && layer.id === 'b4cfa212-9547-4d43-9119-1db5482954a3')
+          {
+            editType = 'aprobar';
+          }
+          else if(layer && layer.id === 'c8511879-1551-4e2c-b03d-7e9c9d3272c9')
+          {
+            editType = 'retractar';
+          }
+
           secondRowButtons.push(
             <Button
               key='edit'
               variant='outlined'
               size='small'
               className='selection-pane-button'
-              onClick={() => this.onElementActionClick(ViewerUtility.dataPaneAction.editCustomPolygon)}
+              onClick={() => this.onElementActionClick(ViewerUtility.dataPaneAction.editCustomPolygon, editType)}
               disabled={!canEdit}
             >
-              {'EDITAR'}
+              {editType}
             </Button>,
             <Button
               key='delete'

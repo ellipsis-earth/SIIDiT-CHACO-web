@@ -104,7 +104,7 @@ class DataPane extends PureComponent {
               >
                 {'MENSAJES'}
               </Button>, <br key='geoMessageFeedBreak'/> ]: null}
-            <DeforestationCard map={this.props.map} totals={this.props.totals} setTotals={this.props.setTotals}/>
+            {/*<DeforestationCard map={this.props.map} totals={this.props.totals} setTotals={this.props.setTotals}/>*/}
             <InfoCards />
             <LegendControl
               map={this.props.map}

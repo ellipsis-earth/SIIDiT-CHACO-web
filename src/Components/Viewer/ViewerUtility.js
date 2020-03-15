@@ -1,3 +1,10 @@
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+
+import tokml from 'tokml';
+
+import {divIcon} from 'leaflet';
+
 import FileSaver from 'file-saver';
 import streamSaver from 'streamsaver';
 import { isAndroid, isIOS, isMobile } from 'react-device-detect';
@@ -64,6 +71,11 @@ const ViewerUtility = {
   },
 
   download: (fileName, text, mime) => {
+    if (mime === 'application/vnd.google-earth.kml+xml')
+    {
+      text = tokml(JSON.parse(text))
+    }
+
     if (isMobile && isAndroid) {
       const fileStream = streamSaver.createWriteStream(fileName);
 
@@ -96,7 +108,21 @@ const ViewerUtility = {
     };
   },
 
-  isPrivateProperty: 'isPrivate'
+  isPrivateProperty: 'isPrivate',
+
+  returnMarker: (color, markerSize, iconName) => {
+    let IconClass = require(('@material-ui/icons/' + iconName)).default;
+    let temp = <IconClass viewBox={`${markerSize.y/4} 0 ${markerSize.y/2} ${markerSize.y}`} className="layerMarker" style={{fill: color, filter: 'drop-shadow(1px 1px 1px rgba(0,0,0,0.5))', width: markerSize.x*2 + 'px', height: markerSize.y*2 + 'px'}}/>;
+    let markerIcon = renderToStaticMarkup(temp);
+    let icon = divIcon({
+      className: 'layerDivIcon',
+      html: markerIcon,
+      iconSize: [markerSize.x*2, markerSize.y*2],
+      iconAnchor: [markerSize.x, markerSize.y*2],
+    });
+
+    return icon;
+  }
 
 }
 

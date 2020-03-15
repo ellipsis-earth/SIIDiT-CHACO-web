@@ -136,7 +136,7 @@
 
 .labelToolToolbar .selected
 {
-  box-shadow: inset 0px 0px 20px 20px #0264641a;
+  box-shadow: inset 0px 0px 20px 20px #7c9c1e1a;
 }
 
 .labelToolToolbar .MuiExpansionPanel-root:before, .labelToolToolbar .MuiExpansionPanel-root:after
@@ -259,7 +259,7 @@
   padding: 0;
   padding-left: 10px;
   margin: 0;
-  color: #026464;
+  color: #7c9c1e;
 }
 
 div.MuiTooltip-popper

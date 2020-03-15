@@ -309,7 +309,7 @@ class GeoMessageControl extends PureComponent {
 
       let body = {
         mapId: map.id,
-        timestamp: map.timestamps[timestampRange.end].timestampNumber
+        timestamp: map.timestamps[timestampRange.end].timestamp
       };
 
       let url = '';
@@ -627,9 +627,9 @@ class GeoMessageControl extends PureComponent {
       'feed',
     ];
 
-    let fileName = nameComponents.join('_') + '.geojson';
+    let fileName = nameComponents.join('_') + '.kml';
 
-    ViewerUtility.download(fileName, JSON.stringify(geoJson), 'application/json');
+    ViewerUtility.download(fileName, JSON.stringify(geoJson), 'application/vnd.google-earth.kml+xml');
   }
 
   renderMessages = () => {
@@ -662,7 +662,8 @@ class GeoMessageControl extends PureComponent {
 
   renderFilterSection = () => {
     let downloadGeometries = null;
-    if (this.state.filterSettings.applyToMap) {
+    downloadGeometries = <span>{'Aplicar al mapa'}</span>;
+    /*if (this.state.filterSettings.applyToMap) {
       downloadGeometries = (
         <span>
           {`${'Aplicar al mapa'} (${this.state.count})`}
@@ -677,7 +678,7 @@ class GeoMessageControl extends PureComponent {
     }
     else {
       downloadGeometries = (<span>{'Aplicar al mapa'}</span>);
-    }
+    }*/
 
     let filtersSectionClass = 'data-pane-card groups-filter-card';
     if (this.state.filtersExpanded) {

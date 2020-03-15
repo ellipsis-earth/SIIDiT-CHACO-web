@@ -1,29 +1,32 @@
 import React, { PureComponent } from 'react';
+/*import { renderToStaticMarkup } from 'react-dom/server';*/
 import { GeoJSON } from 'react-leaflet';
+import L/*, {divIcon}*/ from 'leaflet';
 
 import Card from '@material-ui/core/Card';
-import Checkbox from '@material-ui/core/Checkbox';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+import Checkbox from '@material-ui/core/Checkbox';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Collapse from '@material-ui/core/Collapse';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+/*import RoomIcon from '@material-ui/icons/RoomTwoTone';*/
 import SaveAlt from '@material-ui/icons/SaveAlt';
+
+import LayerInfoButton from './LayerUtilities/LayerInfo';
 
 import Utility from '../../../../Utility';
 import ViewerUtility from '../../ViewerUtility';
 
-import LayerInfoButton from './LayerUtilities/LayerInfo';
 import './PolygonLayersControl.css';
 
 import ApiManager from '../../../../ApiManager';
 
-import MobileWarning from './LayerUtilities/MobileWarning'
-
-const MAX_POLYGONS = 3000;
+const MAX_POLYGONS = 1000;
 
 class PolygonLayersControl extends PureComponent {
 
@@ -36,38 +39,17 @@ class PolygonLayersControl extends PureComponent {
       availableLayers: [],
       selectedLayers: [],
 
+      loading: false,
+
       options: [],
 
       expanded: true,
 
-      count: {},
-
-      warningLayer: null,
-      warningOpen: false,
+      count: {}
     };
 
     this.filterDetectada = ["b4cfa212-9547-4d43-9119-1db5482954a3", "647c9802-f136-4029-aa6d-884396be4e9b"];
-    this.filterInformation = ["bfe00499-c9f4-423f-b4c6-9adfd4e91d1e", "963c2e9f-068a-4213-8cb7-cf336c57d40e", "7373e49b-dae5-48e0-b937-7ee07a9d5cb2", "e56e3079-a0e1-4e44-8aef-219dde0cb850", "e3fa7c52-f02c-4977-bdd9-33b250da9b33", "5410fdcd-6b17-414c-8be3-c973db5bd0f9", "e99121e1-9d6e-4bfb-94b6-0b8ca1492ff3", "5e45ea5c-1f1c-47bf-9309-12316200cf61"]
-
-    this.filterProps = {
-      "b4cfa212-9547-4d43-9119-1db5482954a3": {
-        type: 'tile',
-        formID: '5fd5ebe0-9d02-11e9-baf8-42010a840021',
-      },
-      "647c9802-f136-4029-aa6d-884396be4e9b" : {
-        type: 'polygon',
-        formID: '0ef01ab2-9d01-11e9-baf8-42010a840021',
-      }
-    };
-
-    try
-    {
-      this.state.isMobile = document.createEvent("TouchEvent") && window.innerWidth <= 700 ? true : null;
-    }
-    catch(e)
-    {
-      this.state.isMobile = false
-    }
+    this.filterInformation = ["bfe00499-c9f4-423f-b4c6-9adfd4e91d1e", "963c2e9f-068a-4213-8cb7-cf336c57d40e", "7373e49b-dae5-48e0-b937-7ee07a9d5cb2", "e56e3079-a0e1-4e44-8aef-219dde0cb850", "e3fa7c52-f02c-4977-bdd9-33b250da9b33", "5410fdcd-6b17-414c-8be3-c973db5bd0f9", "e99121e1-9d6e-4bfb-94b6-0b8ca1492ff3", "5e45ea5c-1f1c-47bf-9309-12316200cf61"];
   }
 
   componentDidMount() {
@@ -142,35 +124,32 @@ class PolygonLayersControl extends PureComponent {
     let availableLayers = this.state.availableLayers;
     let selectedLayers = this.state.selectedLayers;
 
-    for (let i = 0; i < availableLayers.length; i++)
-    {
+    for (let i = 0; i < availableLayers.length; i++) {
+
       let availableLayer = availableLayers[i];
       let checked = selectedLayers.find(x => x === availableLayer) ? true : false;
 
       let counter = null;
       let count = this.state.count[availableLayer.name];
-      if (checked && count !== undefined) {
-        let className = '';
-        let downloadButton = null;
 
-        if (count > MAX_POLYGONS) {
-          className = 'geometry-limit-exceeded';
-        }
-        else {
-          downloadButton = (
+      if (checked && count !== undefined) {
+        let downloadButton = (
             <IconButton
               className='download-geometry-button'
-              onClick={() => this.onDownload(availableLayer.name)}
+              onClick={() => {this.setState({loading: true}, () => this.onDownload(availableLayer.name))}}
+              disabled={this.state.loading}
+              key={availableLayer.name + '_' + this.state.loading}
             >
-              <SaveAlt className='download-geometry-button-icon'/>
+              {this.state.loading? <CircularProgress size={26} /> : <SaveAlt className='download-geometry-button-icon'/>}
             </IconButton>
           );
-        }
 
         counter = (
-          <span className='geometry-counter'>
-            <span className={className}>{count}</span>
-            <span>/{MAX_POLYGONS}</span>
+          <span className='geometry-counter' key={availableLayer.name + '_' + count}>
+            <span className='count'>
+              <span className={count > MAX_POLYGONS ? 'geometry-limit-exceeded' : ''}>{count}</span>
+              <span>/{MAX_POLYGONS}</span>
+            </span>
             {downloadButton}
           </span>
         )
@@ -179,7 +158,8 @@ class PolygonLayersControl extends PureComponent {
       let option = (
         <div key={availableLayer.name} className='layer-checkboxes'>
           <FormControlLabel
-            control = {
+            margin='dense'
+            control={
               <Checkbox
                 key={availableLayer.name}
                 classes={{ root: 'layers-control-checkbox' }}
@@ -188,10 +168,9 @@ class PolygonLayersControl extends PureComponent {
                 name={availableLayer.name}
                 onChange={this.onLayerChange}
                 checked={checked}
-              /> }
-            label={[
-              <p className='layerLabel' key={availableLayer.name}>{availableLayer.name}</p>,
-              <LayerInfoButton key={'LayerInfo_' + availableLayer.name} id={availableLayer.id} getLayerInfoContent={this.props.getLayerInfoContent}/>]}
+              />
+            }
+            label={[<span key={availableLayer.name}>{availableLayer.name}</span>, <LayerInfoButton key={'LayerInfo_' + availableLayer.name} id={availableLayer.id} getLayerInfoContent={this.props.getLayerInfoContent}/>]}
           />
           {counter}
         </div>
@@ -222,157 +201,122 @@ class PolygonLayersControl extends PureComponent {
     }
   }
 
-  sortLayers = (availableLayers) => {
-    let border = 2;
-
-    availableLayers = JSON.parse(JSON.stringify(availableLayers));
-    let filter = JSON.parse(JSON.stringify(availableLayers)).filter(x => !this.filterInformation.includes(x.id));
-
-    availableLayers.sort((a,b) => {
-      if (filter.includes(a.id) && filter.includes(b.id))
-      {
-        if (this.filterDetectada.includes(a.id) && this.filterDetectada.includes(b.id))
-        {
-          return 0;
-        }
-        else if(this.filterDetectada.includes(b.id))
-        {
-          return -1;
-        }
-        else if(this.filterDetectada.includes(a.id))
-        {
-          return 1;
-        }
-      }
-      else if(filter.includes(b.id))
-      {
-        return -1;
-      }
-      else if(filter.includes(a.id))
-      {
-        return 1;
-      }
-    });
-
-    return availableLayers;
-  }
-
-  getIds = (map, timestampRange, polygonLayer, bounds, filter) => {
-    let body = {
-      mapId: map.id,
-      limit: MAX_POLYGONS
-    };
-
-    if (filter)
-    {
-      body.type = filter.type;
-      body.filters = {
-        forms: [map.forms.find(x => x.uuid === filter.formID).formName],
-        bounds: {
-          xMin: bounds.xMin,
-          xMax: bounds.xMax,
-          yMin: bounds.yMin,
-          yMax: bounds.yMax,
-        }
-      }
-
-      return ApiManager.post('/geoMessage/ids', body, this.props.user, 'v2')
-    }
-    else
-    {
-      body.timestamp = map.timestamps[timestampRange.end].timestampNumber;
-      body.layer = polygonLayer.name;
-      body.xMin = bounds.xMin;
-      body.xMax = bounds.xMax;
-      body.yMin = bounds.yMin;
-      body.yMax = bounds.yMax;
-      body.zoom = map.zoom;
-
-      return ApiManager.post('/metadata/polygons', body, this.props.user)
-    }
+  getDownloadData = async (map) => {
 
   }
 
   prepareLayers = async (map, timestampRange, availableLayers, selectedLayers) => {
     let promises = [];
 
-    availableLayers = this.sortLayers(availableLayers);
-
     for (let i = 0; i < availableLayers.length; i++) {
-
-      let polygonLayer = availableLayers[i]
+      let polygonLayer = availableLayers[i];
 
       if (!selectedLayers.find(x => x.name === polygonLayer.name)) {
         continue;
       }
 
+      let selectLayer = polygonLayer;
+
       let bounds = this.props.leafletMapViewport.bounds;
 
-      let filter = null;
-      let type = 'polygon';
+      let body = {
+        mapId: map.id,
+        type: ViewerUtility.polygonLayerType,
+        layer: selectLayer.name,
+        xMin: bounds.xMin,
+        xMax: bounds.xMax,
+        yMin: bounds.yMin,
+        yMax: bounds.yMax,
+        limit: MAX_POLYGONS,
+      };
 
-      /*if (this.filterDetectada.includes(polygonLayer.id))
+      if(selectLayer.id === 'c8511879-1551-4e2c-b03d-7e9c9d3272c9')
       {
-        filter = this.filterProps[polygonLayer.id]
-        type = filter.type;
-      }*/
+        let filter = [];
+        if (timestampRange.end === timestampRange.start)
+        {
+          filter.push({key: 'timestamp', value: timestampRange.end, operator: '='})
+        }
+        else
+        {
+          filter.push({key: 'timestamp', value: timestampRange.start, operator: '>='});
+          filter.push({key: 'timestamp', value: timestampRange.end, operator: '<='});
+        }
 
-      let leafletGeojsonLayerPromise = this.getIds(map, timestampRange, polygonLayer, bounds, filter)
+        body.filters = filter;
+      }
+
+      let leafletGeojsonLayerPromise = await ApiManager.post('/geometry/ids', body, this.props.user, 'v2')
         .then(polygonIds => {
           let count = {
             ...this.state.count,
           };
-          count[polygonLayer.name] = polygonIds.count;
+          count[selectLayer.name] = polygonIds.count;
 
           this.setState({ count: count });
 
           if (!polygonIds || polygonIds.count === 0 || polygonIds.count > MAX_POLYGONS) {
-            this.layerGeoJsons[polygonLayer.name] = null;
+            this.layerGeoJsons[selectLayer.name] = null;
             return null;
           }
 
-          let body = {
+          body = {
             mapId: map.id,
-            timestamp: map.timestamps[timestampRange.end].timestampNumber,
-          }
+            type: ViewerUtility.polygonLayerType,
+            elementIds: polygonIds.ids
+          };
 
-          if (filter)
-          {
-            if (type === 'polygon')
-            {
-              body['polygonIds'] = polygonIds.messages.map(x => {return x.elementId})
-            }
-            else
-            {
-              body['tileIds'] = polygonIds.messages.map(x => {return x.elementId})
-            }
-          }
-          else
-          {
-            body['polygonIds'] = polygonIds.ids
-          }
-
-          return ApiManager.post(('/geometry/' + type + 's'), body, this.props.user);
+          return ApiManager.post('/geometry/get', body, this.props.user, 'v2');
         })
         .then(polygonsGeoJson => {
           if (!polygonsGeoJson) {
-            this.layerGeoJsons[polygonLayer.name] = null;
+            this.layerGeoJsons[selectLayer.name] = null;
             return null;
           }
 
-          this.layerGeoJsons[polygonLayer.name] = {
+          this.layerGeoJsons[selectLayer.name] = {
             geoJson: polygonsGeoJson,
             bounds: bounds
           };
 
+          let icon = ViewerUtility.returnMarker(`#${selectLayer.color}`, this.props.markerSize, 'RoomTwoTone')
+
+
+          let linesCollection = {
+            type: 'FeatureCollection',
+            count: 0,
+            features: []
+          };
+
+          for (let i = polygonsGeoJson.features.length - 1; i >= 0; i--)
+          {
+            if (polygonsGeoJson.features[i] && polygonsGeoJson.features[i].geometry.type === 'LineString')
+            {
+              linesCollection.features.push(polygonsGeoJson.features[i]);
+              linesCollection.count = linesCollection.count + 1;
+
+              polygonsGeoJson.count = polygonsGeoJson.count - 1;
+              polygonsGeoJson.features.splice(i,1);
+            }
+          }
+
           return (
-            <GeoJSON
+            [<GeoJSON
               key={Math.random()}
               data={polygonsGeoJson}
-              style={ViewerUtility.createGeoJsonLayerStyle(`#${polygonLayer.color}`, null, 0)}
+              style={ViewerUtility.createGeoJsonLayerStyle(`#${selectLayer.color}`)}
               zIndex={ViewerUtility.polygonLayerZIndex + i}
-              onEachFeature={(feature, layer) => layer.on({ click: () => this.onFeatureClick(feature, polygonLayer.hasAggregatedData, null, null, filter) })}
+              onEachFeature={(feature, layer) => {layer.on({ click: () => this.onFeatureClick(feature, selectLayer.hasAggregatedData) })}}
+              pointToLayer={(geoJsonPoint, latlng) => this.markerReturn(latlng, icon)}
+            />,
+            <GeoJSON
+              key={Math.random()}
+              data={linesCollection}
+              style={ViewerUtility.createGeoJsonLayerStyle(`#${selectLayer.color}`, 3)}
+              zIndex={ViewerUtility.polygonLayerZIndex + i}
+              onEachFeature={(feature, layer) => {layer.on({ click: () => this.onFeatureClick(feature, selectLayer.hasAggregatedData) })}}
             />
+            ]
           );
         });
 
@@ -384,60 +328,48 @@ class PolygonLayersControl extends PureComponent {
     return leafletGeoJsonLayers;
   }
 
-  onLayerChange = (e) => {
-    if(e && e.target)
+  changeWeight = (feature, layer) => {
+    if (feature.geometry.type === 'LineString')
     {
-      let layerName = e.target.value;
-      let checked = e.target.checked;
+      console.log(layer)
+    }
+  }
 
-      let isSelected = this.state.selectedLayers.find(x => x.name === layerName);
+  markerReturn = (latlng, icon) => {
+    return L.marker(latlng, {icon: icon, pane: 'overlayPane'});
+  }
 
-      let newSelectedLayers = null;
-      let changed = false;
+  onLayerChange = (e) => {
+    let layerName = e.target.value;
+    let checked = e.target.checked;
 
-      if (checked && !isSelected) {
-        if (this.state.isMobile)
-        {
-          if(!this.state.warningOpen)
-          {
-            this.setState({ warningOpen: true, warningLayer: {target: {value: e.target.value, checked: e.target.checked}} });
-          }
-          else
-          {
-            let availableLayer = this.state.availableLayers.find(x => x.name === layerName);
+    let isSelected = this.state.selectedLayers.find(x => x.name === layerName);
 
-            newSelectedLayers = [...this.state.selectedLayers, availableLayer];
+    let newSelectedLayers = null;
+    let changed = false;
 
-            changed = true;
+    if (checked && !isSelected) {
+      let availableLayer = this.state.availableLayers.find(x => x.name === layerName);
 
-            this.setState({ warningOpen: false, warningLayer: null})
-          }
-        }
-        else
-        {
-          let availableLayer = this.state.availableLayers.find(x => x.name === layerName);
+      newSelectedLayers = [...this.state.selectedLayers, availableLayer];
 
-          newSelectedLayers = [...this.state.selectedLayers, availableLayer];
+      changed = true;
+    }
+    else if (!checked && isSelected) {
+      newSelectedLayers = Utility.arrayRemove(this.state.selectedLayers, isSelected);
 
-          changed = true;
-        }
-      }
-      else if (!checked && isSelected) {
-        newSelectedLayers = Utility.arrayRemove(this.state.selectedLayers, isSelected);
+      newSelectedLayers = [...newSelectedLayers];
 
-        newSelectedLayers = [...newSelectedLayers];
+      changed = true;
+    }
 
-        changed = true;
-      }
+    if (changed) {
+      this.setState({ selectedLayers: newSelectedLayers });
 
-      if (changed) {
-        this.setState({ selectedLayers: newSelectedLayers });
-
-        this.prepareLayers(this.props.map, this.props.timestampRange, this.state.availableLayers, newSelectedLayers)
-          .then(standardTilesLayers => {
-            this.props.onLayersChange(standardTilesLayers);
-          });
-      }
+      this.prepareLayers(this.props.map, this.props.timestampRange, this.state.availableLayers, newSelectedLayers)
+        .then(standardTilesLayers => {
+          this.props.onLayersChange(standardTilesLayers);
+        });
     }
   }
 
@@ -445,15 +377,82 @@ class PolygonLayersControl extends PureComponent {
     this.setState({ expanded: !this.state.expanded });
   }
 
-  onFeatureClick = (feature, hasAggregatedData, color, cb, filter) => {
-    this.props.onFeatureClick(feature, hasAggregatedData, color, cb, filter);
+  onFeatureClick = (feature, hasAggregatedData) => {
+    this.props.onFeatureClick(feature, hasAggregatedData);
   }
 
-  onDownload = (layerName) => {
+  onDownload = async (layerName) => {
     let data = this.layerGeoJsons[layerName];
 
     if (!data) {
-      return;
+      let bounds = this.props.leafletMapViewport.bounds;
+
+      let body = {
+        mapId: this.props.map.id,
+        type: ViewerUtility.polygonLayerType,
+        layer: layerName,
+        xMin: bounds.xMin,
+        xMax: bounds.xMax,
+        yMin: bounds.yMin,
+        yMax: bounds.yMax,
+      };
+
+      let selectLayer = this.props.map.layers.polygon.find(x => x.name === layerName);
+
+      if(selectLayer.id === 'c8511879-1551-4e2c-b03d-7e9c9d3272c9')
+      {
+        let filter = [];
+        if (this.props.timestampRange.end === this.props.timestampRange.start)
+        {
+          filter.push({key: 'timestamp', value: this.props.timestampRange.end, operator: '='})
+        }
+        else
+        {
+          filter.push({key: 'timestamp', value: this.props.timestampRange.start, operator: '>='});
+          filter.push({key: 'timestamp', value: this.props.timestampRange.end, operator: '<='});
+        }
+
+        body.filters = filter;
+      }
+
+      let leafletGeojsonLayerPromise = await ApiManager.post('/geometry/ids', body, this.props.user, 'v2')
+      .then(polygonIds => {
+        let geometryPromises = [];
+
+        let body = {
+          mapId: this.props.map.id,
+          type: ViewerUtility.polygonLayerType,
+        };
+
+        let i,j,temparray,chunk = MAX_POLYGONS;
+        for (i=0,j=polygonIds.ids.length; i<j; i+=chunk)
+        {
+          temparray = polygonIds.ids.slice(i,i+chunk);
+          body.elementIds = temparray;
+
+          geometryPromises.push(ApiManager.post('/geometry/get', body, this.props.user, 'v2'))
+        }
+
+        return Promise.all(geometryPromises);
+      })
+      .then(polygonsGeoJson => {
+        let count = 0;
+        let features = [];
+
+        for (let i = 0; i < polygonsGeoJson.length; i++)
+        {
+          count = count + polygonsGeoJson[i].count;
+          features = [...features, ...polygonsGeoJson[i].features];
+        }
+
+        let returnJson = {
+          type: "FeatureCollection",
+          count: count,
+          features: features,
+        };
+
+        data = {bounds: bounds, geoJson: returnJson};
+      });
     }
 
     let bounds = data.bounds;
@@ -470,21 +469,10 @@ class PolygonLayersControl extends PureComponent {
       bounds.yMax.toFixed(decimals)
     ];
 
-    let fileName = nameComponents.join('_').replace(' ', '_') + '.geojson';
+    let fileName = nameComponents.join('_').replace(' ', '_') + '.kml';
 
-    ViewerUtility.download(fileName, JSON.stringify(data.geoJson), 'application/json');
-  }
-
-  handleClose = (value) => {
-    let warningLayer = this.state.warningLayer;
-    if (value)
-    {
-      this.onLayerChange(warningLayer)
-    }
-    else
-    {
-      this.setState({ warningOpen: false, warningLayer: null})
-    }
+    ViewerUtility.download(fileName, JSON.stringify(data.geoJson), 'application/vnd.google-earth.kml+xml');
+    this.setState({loading: false})
   }
 
   render() {
@@ -494,44 +482,37 @@ class PolygonLayersControl extends PureComponent {
     }
 
     return (
-      <div>
-        <Card className='layers-control'>
-          <CardHeader
-            className='material-card-header'
-            title={
-              <Typography gutterBottom variant="h6" component="h2">
-                {'Polígonos'}
-              </Typography>
-            }
-            action={
-              <IconButton
-                className={this.state.expanded ? 'expand-icon expanded' : 'expand-icon'}
-                onClick={this.onExpandClick}
-                aria-expanded={this.state.expanded}
-                aria-label='Show'
-              >
-                <ExpandMoreIcon />
-              </IconButton>
-            }
-          />
-          <Collapse in={this.state.expanded}>
-            <CardContent
-              className={'card-content'}
+      <Card className='layers-control'>
+        <CardHeader
+          className='material-card-header'
+          title={
+            <Typography gutterBottom variant="h6" component="h2">
+              {'Polygons'}
+            </Typography>
+          }
+          action={
+            <IconButton
+              className={this.state.expanded ? 'expand-icon expanded' : 'expand-icon'}
+              onClick={this.onExpandClick}
+              aria-expanded={this.state.expanded}
+              aria-label='Show'
             >
-              {
-                !this.props.override ?
-                  this.createLayerCheckboxes() :
-                  <div className='controls-pane-background-text'>Controlled by feed</div>
-              }
-            </CardContent>
-          </Collapse>
-        </Card>
-          <MobileWarning
-            key={this.state.warningOpen}
-            handleClose={this.handleClose}
-            open={this.state.warningOpen}
-          />
-      </div>
+              <ExpandMoreIcon />
+            </IconButton>
+          }
+        />
+        <Collapse in={this.state.expanded}>
+          <CardContent
+            className={'card-content'}
+          >
+            {
+              !this.props.override ?
+                this.createLayerCheckboxes() :
+                <div className='controls-pane-background-text'>Controlled by feed</div>
+            }
+          </CardContent>
+        </Collapse>
+      </Card>
     );
   }
 }

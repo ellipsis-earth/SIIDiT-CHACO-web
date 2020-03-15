@@ -466,9 +466,9 @@ class FilterControl extends PureComponent {
 			bounds.yMax.toFixed(decimals)
 		];
 
-		let fileName = nameComponents.join('_') + '.geojson';
+		let fileName = nameComponents.join('_') + '.kml';
 
-		ViewerUtility.download(fileName, JSON.stringify(layerGeoJsonInfo.geoJson), 'application/json');
+		ViewerUtility.download(fileName, JSON.stringify(layerGeoJsonInfo.geoJson), 'application/vnd.google-earth.kml+xml');
 	}
 
 	tileBoundsToGeoJson = (tileBounds, zoom) => {

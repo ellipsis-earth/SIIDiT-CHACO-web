@@ -203,7 +203,7 @@ class CustomPolygonLayersControl extends PureComponent {
 
       let body = {
         mapId: map.id,
-        timestamp: map.timestamps[timestampRange.end].timestampNumber,
+        timestamp: map.timestamps[timestampRange.end].timestamp,
         layer: customPolygonLayer.name,
         xMin: bounds.xMin,
         xMax: bounds.xMax,
@@ -229,7 +229,7 @@ class CustomPolygonLayersControl extends PureComponent {
 
           body = {
             mapId: map.id,
-            timestamp: map.timestamps[timestampRange.end].timestampNumber,
+            timestamp: map.timestamps[timestampRange.end].timestamp,
             customPolygonIds: customPolygonIds.ids
           }
 
@@ -328,9 +328,9 @@ class CustomPolygonLayersControl extends PureComponent {
       bounds.yMax.toFixed(decimals)
     ];
 
-    let fileName = nameComponents.join('_').replace(' ', '_') + '.geojson';
+    let fileName = nameComponents.join('_').replace(' ', '_') + '.kml';
 
-    ViewerUtility.download(fileName, JSON.stringify(data.geoJson), 'application/json');
+    ViewerUtility.download(fileName, JSON.stringify(data.geoJson), 'application/vnd.google-earth.kml+xml');
   }
 
   render() {

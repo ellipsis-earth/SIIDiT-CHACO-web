@@ -24,10 +24,10 @@ const ApiManager = {
     customPolygonLayers: 800,
     userManagement: 900,
     owner: 1000,
-  
+
     mapPublicLevelOne: 300, // viewGeoMessages
     mapPublicLevelTwo: 500, // addPolygons
-  
+
     min: 0,
     max: 1000
   },
@@ -73,7 +73,7 @@ async function apiManagerFetch(method, url, body, user, version) {
   return await fetch(url, options)
     .then(response => {
 
-      gottenResponse = response;        
+      gottenResponse = response;
 
       let contentType = response.headers.get('Content-Type');
 
@@ -94,13 +94,13 @@ async function apiManagerFetch(method, url, body, user, version) {
       if (gottenResponse.status === 200) {
         return result
       }
-      else {  
+      else {
         if (!isText) {
           throw {
             status: gottenResponse.status,
             message: result.message
           };
-        }        
+        }
         else {
           throw {
             status: gottenResponse.status,

@@ -46,7 +46,8 @@
     "react-table": "^6.10.0",
     "react-vis": "^1.11.7",
     "remarkable": "^2.0.0",
-    "streamsaver": "^2.0.3"
+    "streamsaver": "^2.0.3",
+    "tokml": "^0.4.0"
   },
   "scripts": {
     "start": "react-scripts start",

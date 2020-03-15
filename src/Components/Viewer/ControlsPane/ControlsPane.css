@@ -44,7 +44,7 @@ div.card-content:last-child {
   right: 0;
   margin-top: -.5rem;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;;
   height: 34px;
   padding-left: 25px;
 }

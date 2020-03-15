@@ -85,7 +85,7 @@ class AnnotateTool extends Component {
     this.backgroundImage = null;
     this.polygonImage = null;
 
-    this.TILE_TYPE = this.props.map.model[0].visualizationName;
+    this.TILE_TYPE = this.props.map.models[0].visualizationName;
 
     this.lastPoint = {};
     this.mouseType = null;
@@ -103,7 +103,7 @@ class AnnotateTool extends Component {
     let stepper = (<div className='stepperContainer'>
       <div className='stepperInfo'>
         <span className='stepperInfoItem'>user: {this.props.tileInfo[step - 1] ? this.props.tileInfo[step - 1].user : 'automated'}</span>
-        <span className='stepperInfoItem'>date: {new Date(this.props.tileInfo[step - 1] ? this.props.tileInfo[step - 1].date : this.props.map.timestamps.find(x => x.timestampNumber === this.props.timestamp).dateTo).toLocaleString()}</span>
+        <span className='stepperInfoItem'>date: {new Date(this.props.tileInfo[step - 1] ? this.props.tileInfo[step - 1].date : this.props.map.timestamps.find(x => x.timestamp === this.props.timestamp).dateTo).toLocaleString()}</span>
       </div>
       <MobileStepper
       className='annotateStepper'
@@ -1043,7 +1043,7 @@ class AnnotateTool extends Component {
           strokeSize={this.state.strokeSize}
           hideLabel={this.state.hideLabel}
           hidePolygons={this.state.hidePolygons}
-          mask={this.props.map.model[0].usePolygons}
+          mask={this.props.map.models[0].usePolygons}
         />
         {this.state.stepper}
       </div>

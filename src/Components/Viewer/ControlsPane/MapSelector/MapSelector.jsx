@@ -109,46 +109,21 @@ export class MapSelector extends PureComponent {
       mapId: map.id
     };
 
-    let timestampsPromise = ApiManager.post('/metadata/timestamps', body, this.props.user);
-    let tileLayersPromise = ApiManager.post('/metadata/tileLayers', body, this.props.user);
-    let polygonLayersPromise = ApiManager.post('/metadata/polygonLayers', body, this.props.user);
-
-    let classesPromise = ApiManager.post('/metadata/classes', body, this.props.user);
-    let measurementsPromise = ApiManager.post('/metadata/measurements', body, this.props.user);
-    let modelPromise = ApiManager.post('/metadata', { mapId: map.id, type: 'model' }, this.props.user, 'v2');
-    let formsPromise = null;
-    if (map.accessLevel >= ApiManager.accessLevels.viewGeoMessages) {
-      formsPromise = ApiManager.post('/geomessage/forms/get', body, this.props.user);
-    }
-
-    let promises = [
-      timestampsPromise,
-      tileLayersPromise,
-      polygonLayersPromise,
-
-      classesPromise,
-      measurementsPromise,
-      modelPromise,
-      formsPromise
-    ];
-
-    return Promise.all(promises)
-      .then(results => {
-        map.timestamps = results[0];
+    return ApiManager.post('/metadata', { mapId: map.id }, this.props.user, 'v2')
+      .then(result => {
+        map.timestamps = result.timestamps;
+        map.classes = result.classes;
+        map.measurements = result.measurements;
         map.layers = {
-          tile: results[1],
-          polygon: results[2],
+          tile: result.mapLayers,
+          polygon: result.polygonLayers
         };
-
-        map.classes = results[3];
-        map.measurements = results[4];
-        map.model = results[5];
-        if (results[6]) {
-          map.forms = results[6]
-        }
+        map.bands = result.bands;
+        map.forms = result.forms;
+        map.models = result.models
 
         map.metadataLoaded = true;
-      })
+      });
   }
 
   renderAtlasSelect = () => {

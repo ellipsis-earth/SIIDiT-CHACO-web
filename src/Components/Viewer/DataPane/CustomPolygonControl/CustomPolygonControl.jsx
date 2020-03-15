@@ -146,12 +146,12 @@ class CustomPolygonControl extends PureComponent {
     console.log(this.props.map.timestamps, this.state.propertyValues)
     let date = this.state.propertyValues.date ? this.state.propertyValues.date : moment().format(DATE_FORMAT);
     //Check for timestamp closest to given date
-    let timestampNumber = this.props.map.timestamps[this.props.map.timestamps.length - 1].timestampNumber;
+    let timestampNumber = this.props.map.timestamps[this.props.map.timestamps.length - 1].timestamp;
 
     for (let i = 0; i < this.props.map.timestamps.length; i++) {
       if(!moment(this.props.map.timestamps[i].dateTo).isBefore(date))
       {
-        timestampNumber = i === 0 ? -1 : this.props.map.timestamps[i - 1].timestampNumber;
+        timestampNumber = i === 0 ? -1 : this.props.map.timestamps[i - 1].timestamp;
       }
     }
 
@@ -287,7 +287,7 @@ class CustomPolygonControl extends PureComponent {
                 margin="normal"
                 label={property}
                 format={DATE_FORMAT}
-                value={this.state.propertyValues[property] ? this.state.propertyValues[property] : moment(this.props.map.timestamps.find(x => x.timestampNumber === this.props.timestampRange.end).dateTo).format(DATE_FORMAT)}
+                value={this.state.propertyValues[property] ? this.state.propertyValues[property] : moment(this.props.map.timestamps.find(x => x.timestamp === this.props.timestampRange.end).dateTo).format(DATE_FORMAT)}
                 onChange={(e) => this.onPropertyValueChange(e, property)}
                 DialogProps={{style:{zIndex: 2500}}}
                 disableFuture
