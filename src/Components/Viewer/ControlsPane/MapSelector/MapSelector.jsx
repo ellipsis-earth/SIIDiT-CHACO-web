@@ -105,10 +105,6 @@ export class MapSelector extends PureComponent {
       return Promise.resolve();
     }
 
-    let body = {
-      mapId: map.id
-    };
-
     return ApiManager.post('/metadata', { mapId: map.id }, this.props.user, 'v2')
       .then(result => {
         map.timestamps = result.timestamps;
