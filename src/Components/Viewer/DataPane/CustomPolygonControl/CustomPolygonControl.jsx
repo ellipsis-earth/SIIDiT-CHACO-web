@@ -141,30 +141,32 @@ class CustomPolygonControl extends PureComponent {
     let layer = this.state.selectedLayer;
 
     let feature = this.props.element.feature;
-    feature.properties = this.state.propertyValues;
 
-    console.log(this.props.map.timestamps, this.state.propertyValues)
-    let date = this.state.propertyValues.date ? this.state.propertyValues.date : moment().format(DATE_FORMAT);
+    let date = this.state.propertyValues.date ? this.state.propertyValues.date : moment(this.props.map.timestamps[this.props.map.timestamps.length - 1].dateTo).format(DATE_FORMAT);
     //Check for timestamp closest to given date
+
     let timestampNumber = this.props.map.timestamps[this.props.map.timestamps.length - 1].timestamp;
 
     for (let i = 0; i < this.props.map.timestamps.length; i++) {
-      if(!moment(this.props.map.timestamps[i].dateTo).isBefore(date))
+      if(moment(this.props.map.timestamps[i].dateTo).format(DATE_FORMAT) === date)
+      {
+        timestampNumber = this.props.map.timestamps[i].timestamp;
+      }
+      else if(!moment(this.props.map.timestamps[i].dateTo).isBefore(date))
       {
         timestampNumber = i === 0 ? -1 : this.props.map.timestamps[i - 1].timestamp;
       }
     }
 
-    console.log(this.props.map);
+    feature.properties = {timestamp: timestampNumber, date: date};
 
     let body = {
       mapId: this.props.map.id,
-      timestamp: timestampNumber,
-      layer: layer === -1 ? '09834825-403d-4e5b-9883-ac1bff14ae1f' : layer,
+      layer: layer === -1 ? this.props.map.layers.polygon.find(x => x.id === '09834825-403d-4e5b-9883-ac1bff14ae1f').name : this.props.map.layers.polygon.find(x => x.id === layer).name,
       feature: feature
     };
 
-    /*ApiManager.post('/geometry/addPolygon', body, this.props.user)
+    ApiManager.post('/geometry/add', body, this.props.user, 'v2')
       .then(() => {
         alert('Polygon received. It can take a few moments before it is visible.');
 
@@ -180,7 +182,7 @@ class CustomPolygonControl extends PureComponent {
         }
         console.log(err);
         this.setState({ loading: false });
-      });*/
+      });
   }
 
   editCustomPolygon = () => {
@@ -319,6 +321,7 @@ class CustomPolygonControl extends PureComponent {
               color='primary'
               onClick={this.onSubmit}
               disabled={this.state.loading}
+              startIcon={this.state.loading ? <CircularProgress size={12}/> : null}
             >
               Submit
             </Button>
@@ -342,7 +345,6 @@ class CustomPolygonControl extends PureComponent {
           <CardContent>
             {/*layerSelect*/}
             {propertyInputs}
-            { this.state.loading ? <CircularProgress className='loading-spinner'/> : null}
           </CardContent>
 
         </Card>
