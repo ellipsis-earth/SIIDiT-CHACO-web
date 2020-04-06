@@ -1,0 +1,4 @@
+.leaflet-layer.rgb
+{
+	filter: brightness(1.7);
+}
