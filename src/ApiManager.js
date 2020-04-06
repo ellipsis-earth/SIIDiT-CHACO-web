@@ -46,8 +46,6 @@ const ApiManager = {
 };
 
 async function apiManagerFetch(method, url, body, user, version) {
-  version = version === 'v2' ? 'temp' : version;
-
   url = `${apiUrl}${version}${url}`;
   let headers = {};
 

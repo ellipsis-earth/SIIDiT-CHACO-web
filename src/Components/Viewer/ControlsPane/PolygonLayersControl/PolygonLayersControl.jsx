@@ -370,8 +370,6 @@ class PolygonLayersControl extends Component {
         }
       }
 
-      console.log(filter, filters);
-
       if (filter.length > 0)
       {
         body.filters = filter;

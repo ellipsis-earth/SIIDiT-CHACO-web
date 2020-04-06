@@ -57,11 +57,6 @@ class PolygonLayerFilterPane extends Component {
   }
 
 	render = () => {
-		if(this.props.filterOpen)
-		{
-			console.log(this.props);
-		}
-
 		return (
       <Collapse in={this.props.filterOpen} className='polygonLayerFilterPane filterCollapse'>
       	<List dense>
