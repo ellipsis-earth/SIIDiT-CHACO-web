@@ -142,10 +142,20 @@ class CustomPolygonControl extends PureComponent {
 
     let feature = this.props.element.feature;
 
-    let date = this.state.propertyValues.date ? this.state.propertyValues.date : moment(this.props.map.timestamps[this.props.map.timestamps.length - 1].dateTo).format(DATE_FORMAT);
-    //Check for timestamp closest to given date
+    let date = null;
 
-    let timestampNumber = this.props.map.timestamps[this.props.map.timestamps.length - 1].timestamp;
+    if (this.state.propertyValues.date && this.state.propertyValues.date !== 'Invalid date')
+    {
+      date = this.state.propertyValues.date
+    }
+    else
+    {
+      date = moment(this.props.map.timestamps.find(x => x.timestamp === this.props.timestampRange.end).dateTo).format(DATE_FORMAT);
+    }
+
+
+    //Check for timestamp closest to given date
+    let timestampNumber = this.props.timestampRange.end;
 
     for (let i = 0; i < this.props.map.timestamps.length; i++) {
       if(moment(this.props.map.timestamps[i].dateTo).format(DATE_FORMAT) === date)
@@ -177,10 +187,11 @@ class CustomPolygonControl extends PureComponent {
         });
       })
       .catch(err => {
-        if (err && err.status === 400) {
+        if (err && err.status === 400)
+        {
           alert(err.message);
         }
-        console.log(err);
+        console.error(err);
         this.setState({ loading: false });
       });
   }

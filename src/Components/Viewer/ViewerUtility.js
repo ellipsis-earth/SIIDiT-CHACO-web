@@ -104,7 +104,8 @@ const ViewerUtility = {
     return {
       color: color ? color : '#3388ff',
       weight: weight || weight === 0 ? weight : 1,
-      fillOpacity: fillOpacity || fillOpacity === 0 ? fillOpacity : 0.06
+      fillOpacity: fillOpacity || fillOpacity === 0 ? fillOpacity : 0.03,
+      opacity: 0.75,
     };
   },
 

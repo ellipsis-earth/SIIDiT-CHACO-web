@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 /*import { renderToStaticMarkup } from 'react-dom/server';*/
 import { GeoJSON } from 'react-leaflet';
 import L/*, {divIcon}*/ from 'leaflet';
@@ -11,13 +11,23 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Collapse from '@material-ui/core/Collapse';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import Typography from '@material-ui/core/Typography';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 /*import RoomIcon from '@material-ui/icons/RoomTwoTone';*/
 import SaveAlt from '@material-ui/icons/SaveAlt';
 
-import LayerInfoButton from './LayerUtilities/LayerInfo';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFilter } from '@fortawesome/free-solid-svg-icons'
+
+import LayerInfoButton from './LayerUtilities/LayerInfo/LayerInfo';
+import PolygonLayerFilterPane from './LayerUtilities/PolygonLayerFilterPane/PolygonLayerFilterPane';
 
 import Utility from '../../../../Utility';
 import ViewerUtility from '../../ViewerUtility';
@@ -28,7 +38,7 @@ import ApiManager from '../../../../ApiManager';
 
 const MAX_POLYGONS = 1000;
 
-class PolygonLayersControl extends PureComponent {
+class PolygonLayersControl extends Component {
 
   layerGeoJsons = {}
 
@@ -40,15 +50,19 @@ class PolygonLayersControl extends PureComponent {
       selectedLayers: [],
 
       loading: false,
+      layerLoading: [],
 
       options: [],
 
       expanded: true,
 
-      count: {}
+      count: {},
+
+      filterLayers: [],
+      filters: [],
     };
 
-    this.filterDetectada = ["b4cfa212-9547-4d43-9119-1db5482954a3", "647c9802-f136-4029-aa6d-884396be4e9b"];
+    this.filterDetectada = ["b4cfa212-9547-4d43-9119-1db5482954a3", "647c9802-f136-4029-aa6d-884396be4e9b", "88c50f4c-0582-4c12-9b16-a8ca6bc01616"];
     this.filterInformation = ["bfe00499-c9f4-423f-b4c6-9adfd4e91d1e", "963c2e9f-068a-4213-8cb7-cf336c57d40e", "7373e49b-dae5-48e0-b937-7ee07a9d5cb2", "e56e3079-a0e1-4e44-8aef-219dde0cb850", "e3fa7c52-f02c-4977-bdd9-33b250da9b33", "5410fdcd-6b17-414c-8be3-c973db5bd0f9", "e99121e1-9d6e-4bfb-94b6-0b8ca1492ff3", "5e45ea5c-1f1c-47bf-9309-12316200cf61"];
   }
 
@@ -98,6 +112,29 @@ class PolygonLayersControl extends PureComponent {
     }
   }
 
+  filter = (filter) => {
+    let filters = this.state.filters;
+
+    let appliedFilter = filters.find((x) => x.id === filters.id)
+    if (typeof appliedFilter !== 'undefined')
+    {
+      filters.filter = filter.filter;
+    }
+    else
+    {
+      filters.push(filter);
+    }
+
+    this.setState({filters: filters}, () => {
+      this.prepareLayers(
+        this.props.map, this.props.timestampRange, this.state.availableLayers, this.state.selectedLayers
+      )
+      .then(leafletLayers => {
+        this.props.onLayersChange(leafletLayers);
+      });
+    });
+  }
+
   refresh = () => {
     this.prepareLayers(
       this.props.map, this.props.timestampRange, this.state.availableLayers, this.state.selectedLayers
@@ -114,11 +151,50 @@ class PolygonLayersControl extends PureComponent {
     }
   }
 
+  changeFilterLayers = (layerName, override = false) => {
+    let filterLayers = this.state.filterLayers;
+
+    let index = filterLayers.indexOf(layerName);
+
+    if(index > -1)
+    {
+      filterLayers.splice(index, 1);
+    }
+    else if(override)
+    {
+      filterLayers.push(layerName);
+    }
+
+    this.setState({filterLayers: filterLayers}, () => {
+      this.prepareLayers(this.props.map, this.props.timestampRange, this.state.availableLayers, this.state.selectedLayers)
+      .then(leafletLayers => {
+        this.props.onLayersChange(leafletLayers);
+      });
+    })
+  }
+
+  changeLayerLoading = (layerName) => {
+    let layerLoading = this.state.layerLoading;
+
+    let index = layerLoading.indexOf(layerName);
+
+    if(index > -1)
+    {
+      layerLoading.splice(index, 1);
+    }
+    else
+    {
+      layerLoading.push(layerName);
+    }
+
+    this.setState({layerLoading: layerLoading})
+  }
+
   createLayerCheckboxes = () => {
     let options = [
-      [<h3 key='Celdas con cambios detectados'>Celdas con cambios detectados</h3>, []],
-      [<h3 key='Capas de Cambio de Uso del Suelo'>Capas de Cambio de Uso del Suelo</h3>, []],
-      [<h3 key='Capas de Información'>Capas de Información</h3>, []],
+      [<ListSubheader color='primary' key='Celdas con cambios detectados'>Celdas con cambios detectados</ListSubheader>, []],
+      [<ListSubheader color='primary' key='Capas de Cambio de Uso del Suelo'>Capas de Cambio de Uso del Suelo</ListSubheader>, []],
+      [<ListSubheader color='primary' key='Capas de Información'>Capas de Información</ListSubheader>, []],
     ];
 
     let availableLayers = this.state.availableLayers;
@@ -132,48 +208,87 @@ class PolygonLayersControl extends PureComponent {
       let counter = null;
       let count = this.state.count[availableLayer.name];
 
-      if (checked && count !== undefined) {
         let downloadButton = (
+          <IconButton
+            onClick={() => {this.setState({loading: true}, () => this.onDownload(availableLayer.name))}}
+            disabled={this.state.loading}
+            key={availableLayer.name + '_download_' + this.state.loading}
+            edge="end"
+          >
+            {this.state.loading? <CircularProgress size={18} /> : <SaveAlt fontSize="small"/>}
+          </IconButton>
+        );
+
+        let filterOpen = this.state.filterLayers.includes(availableLayer.name);
+
+        let filterButton = null;
+
+        if (availableLayer.properties && availableLayer.properties.length > 0 && this.filterInformation.includes(availableLayer.id))
+        {
+          filterButton = this.state.loading ? <CircularProgress size={18} /> : <FontAwesomeIcon icon={faFilter} />
+        }
+
+      counter = (
+       <List dense component="div" disablePadding className='counter'>
+        <ListItem key={availableLayer.name + '_counter_' + count}>
+          {filterButton ? <ListItemIcon>
             <IconButton
-              className='download-geometry-button'
-              onClick={() => {this.setState({loading: true}, () => this.onDownload(availableLayer.name))}}
-              disabled={this.state.loading}
-              key={availableLayer.name + '_' + this.state.loading}
+              edge="start"
+              onClick={() => {this.changeFilterLayers(availableLayer.name, true)}}
+              /*disabled={this.state.loading}*/
+              key={availableLayer.name + '_filter_' + this.state.loading}
+              color={filterOpen ? 'primary' : 'default'}
             >
-              {this.state.loading? <CircularProgress size={26} /> : <SaveAlt className='download-geometry-button-icon'/>}
+              {filterButton}
             </IconButton>
-          );
+          </ListItemIcon> : null}
+           <ListItemText className={filterButton ? 'counterText withButton' : 'counterText'} primary={<div className='counterContainer'>
+                <span className={count > MAX_POLYGONS ? 'geometry-limit-exceeded' : ''}>{count}</span>
+                <span>/{MAX_POLYGONS}</span>
+              </div>}
+            />
+           <ListItemSecondaryAction>{downloadButton}</ListItemSecondaryAction>
+        </ListItem>
+        <ListItem key={availableLayer.name + '_filter'}>
+          <PolygonLayerFilterPane
+            filterOpen={filterOpen}
+            layer={availableLayer}
+            filter={this.filter}
+          />
+        </ListItem>
+      </List>)
 
-        counter = (
-          <span className='geometry-counter' key={availableLayer.name + '_' + count}>
-            <span className='count'>
-              <span className={count > MAX_POLYGONS ? 'geometry-limit-exceeded' : ''}>{count}</span>
-              <span>/{MAX_POLYGONS}</span>
-            </span>
-            {downloadButton}
-          </span>
-        )
-      }
+      const labelId = `checkbox-list-label-${availableLayer.name}`;
 
-      let option = (
-        <div key={availableLayer.name} className='layer-checkboxes'>
-          <FormControlLabel
-            margin='dense'
-            control={
+      let option = ([
+        <ListItem color='primary' button dense key={availableLayer.name + '_item_' + checked} onClick={()=>{this.onLayerChange({target: {value: availableLayer.name, checked: !checked}})}}>
+          <ListItemIcon>
+            {
+              this.state.layerLoading.includes(availableLayer.name) ? <CircularProgress size={24} /> :
               <Checkbox
-                key={availableLayer.name}
-                classes={{ root: 'layers-control-checkbox' }}
+                key={availableLayer.name + '_' + checked}
+                edge="start"
                 color='primary'
                 value={availableLayer.name}
                 name={availableLayer.name}
-                onChange={this.onLayerChange}
                 checked={checked}
+                disableRipple
+                tabIndex={-1}
+                inputProps={{ 'aria-labelledby': labelId }}
               />
             }
-            label={[<span key={availableLayer.name}>{availableLayer.name}</span>, <LayerInfoButton key={'LayerInfo_' + availableLayer.name} id={availableLayer.id} getLayerInfoContent={this.props.getLayerInfoContent}/>]}
+          </ListItemIcon>
+          <ListItemText
+            id={labelId}
+            primary={availableLayer.name}
           />
+          <ListItemSecondaryAction>
+            <LayerInfoButton key={'LayerInfo_' + availableLayer.name} id={availableLayer.id} setLayerInfoContent={this.props.setLayerInfoContent}/>
+          </ListItemSecondaryAction>
+        </ListItem>,
+        <Collapse key={availableLayer.name + '_collapse'} in={checked && count !== undefined}>
           {counter}
-        </div>
+        </Collapse>]
       )
 
       if (this.filterInformation.includes(availableLayer.id))
@@ -230,9 +345,10 @@ class PolygonLayersControl extends PureComponent {
         limit: MAX_POLYGONS,
       };
 
+      let filter = [];
+
       if(selectLayer.id === 'c8511879-1551-4e2c-b03d-7e9c9d3272c9')
       {
-        let filter = [];
         if (timestampRange.end === timestampRange.start)
         {
           filter.push({key: 'timestamp', value: timestampRange.end, operator: '='})
@@ -242,7 +358,22 @@ class PolygonLayersControl extends PureComponent {
           filter.push({key: 'timestamp', value: timestampRange.start, operator: '>='});
           filter.push({key: 'timestamp', value: timestampRange.end, operator: '<='});
         }
+      }
 
+      let filters = this.state.filters.find(x => polygonLayer.id === x.id);
+
+      if(typeof filters !== 'undefined' && this.state.filterLayers.includes(polygonLayer.name))
+      {
+        for (let j = 0; j < filters.filter.length; j++)
+        {
+          filter.push(filters.filter[j]);
+        }
+      }
+
+      console.log(filter, filters);
+
+      if (filter.length > 0)
+      {
         body.filters = filter;
       }
 
@@ -348,6 +479,7 @@ class PolygonLayersControl extends PureComponent {
     let newSelectedLayers = null;
     let changed = false;
 
+
     if (checked && !isSelected) {
       let availableLayer = this.state.availableLayers.find(x => x.name === layerName);
 
@@ -363,12 +495,16 @@ class PolygonLayersControl extends PureComponent {
       changed = true;
     }
 
+
     if (changed) {
+      this.changeLayerLoading(e.target.value);
+      this.changeFilterLayers(e.target.value);
       this.setState({ selectedLayers: newSelectedLayers });
 
       this.prepareLayers(this.props.map, this.props.timestampRange, this.state.availableLayers, newSelectedLayers)
         .then(standardTilesLayers => {
           this.props.onLayersChange(standardTilesLayers);
+          this.setState({ layerLoading: [] });
         });
     }
   }
@@ -505,11 +641,13 @@ class PolygonLayersControl extends PureComponent {
           <CardContent
             className={'card-content'}
           >
-            {
-              !this.props.override ?
-                this.createLayerCheckboxes() :
-                <div className='controls-pane-background-text'>Controlled by feed</div>
-            }
+            <List dense className='polygonLayersList'>
+              {
+                !this.props.override ?
+                  this.createLayerCheckboxes() :
+                  <div className='controls-pane-background-text'>Controlled by feed</div>
+              }
+            </List>
           </CardContent>
         </Collapse>
       </Card>

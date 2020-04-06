@@ -22,7 +22,7 @@ import { Button } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
 import Control from 'react-leaflet-control';
 
-import { LayerInfoCard } from './ControlsPane/PolygonLayersControl/LayerUtilities/LayerInfo';
+import { LayerInfoCard } from './ControlsPane/PolygonLayersControl/LayerUtilities/LayerInfo/LayerInfo';
 
 
 import './Viewer.css';
@@ -599,7 +599,7 @@ class Viewer extends PureComponent {
     }
   }
 
-  getLayerInfoContent = (content) => {
+  setLayerInfoContent = (content) => {
     this.setState({layerInfoContent: content});
   }
 
@@ -655,7 +655,7 @@ class Viewer extends PureComponent {
             onFeatureClick={this.selectFeature}
             onFlyTo={this.onFlyTo}
             onDeselect={this.deselectCurrentElement}
-            getLayerInfoContent={this.getLayerInfoContent}
+            setLayerInfoContent={this.setLayerInfoContent}
             markerSize={markerSize}
           />
 
@@ -691,7 +691,8 @@ class Viewer extends PureComponent {
               {this.state.geolocation ? <Marker position={this.state.geolocation} icon={ViewerUtility.returnMarker('#3388ff', markerSize, 'PersonPinCircle')}/> : null}
               <LayerInfoCard
                 content={this.state.layerInfoContent.content}
-                random={this.state.layerInfoContent.random}
+                contentId={this.state.layerInfoContent.contentId}
+                open={this.state.layerInfoContent.open}
                 ref={this.layerInfoCard}
                 closePanes={this.closePanes}
                 openPane={this.openPane}
