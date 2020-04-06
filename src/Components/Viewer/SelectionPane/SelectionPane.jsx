@@ -6,6 +6,9 @@ import Button from '@material-ui/core/Button'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -33,6 +36,7 @@ class SelectionPane extends PureComponent {
       isOpen: false,
       loading: false,
       redirect: false,
+      dialogOpen: false,
     };
 
     this.filterInformation = ["bfe00499-c9f4-423f-b4c6-9adfd4e91d1e", "963c2e9f-068a-4213-8cb7-cf336c57d40e", "7373e49b-dae5-48e0-b937-7ee07a9d5cb2", "e56e3079-a0e1-4e44-8aef-219dde0cb850", "e3fa7c52-f02c-4977-bdd9-33b250da9b33", "5410fdcd-6b17-414c-8be3-c973db5bd0f9", "e99121e1-9d6e-4bfb-94b6-0b8ca1492ff3", "5e45ea5c-1f1c-47bf-9309-12316200cf61"];
@@ -53,6 +57,18 @@ class SelectionPane extends PureComponent {
         this.setState({isOpen: true});
       }
     }
+  }
+
+  handleDialogClose = () => {
+    if (this.state.dialogOpen === true)
+    {
+      this.setState({dialogOpen: false});
+    }
+  }
+
+  handleDialogAccept = () => {
+    this.handleDialogClose();
+    this.onElementActionClick(DELETE_CUSTOM_POLYGON_ACTION);
   }
 
   getInfo = async () => {
@@ -277,8 +293,6 @@ class SelectionPane extends PureComponent {
         let layer = this.props.map.layers.polygon.find(x => x.name === element.feature.properties.layer);
         if (!element.filter && !(layer && this.filterInformation.includes(layer.id)))
         {
-          console.log(layer);
-
           let editType = 'EDITAR';
           if(layer && layer.id === 'b4cfa212-9547-4d43-9119-1db5482954a3')
           {
@@ -305,7 +319,7 @@ class SelectionPane extends PureComponent {
               variant='outlined'
               size='small'
               className='selection-pane-button'
-              onClick={() => this.onElementActionClick(DELETE_CUSTOM_POLYGON_ACTION)}
+              onClick={() => {this.setState({dialogOpen: true})}}
               disabled={!canEdit}
             >
               {'BORRAR'}
@@ -425,6 +439,20 @@ class SelectionPane extends PureComponent {
           <CardContent className={'card-content'}>
             {properties}
             { this.state.loading ? <CircularProgress className='loading-spinner'/> : null}
+            <Dialog
+              open={this.state.dialogOpen}
+              onClose={this.state.handleDialogClose}
+            >
+              <DialogTitle>Eliminar no es reversible</DialogTitle>
+              <DialogActions>
+                <Button onClick={this.handleDialogClose} color="primary">
+                  abortar
+                </Button>
+                <Button onClick={this.handleDialogAccept} color="primary" autoFocus>
+                  entiendo
+                </Button>
+              </DialogActions>
+            </Dialog>
           </CardContent>
           <CardActions className={'selection-pane-card-actions'}>
             <div key='first_row_buttons'>

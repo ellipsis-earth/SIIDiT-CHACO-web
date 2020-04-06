@@ -38,3 +38,8 @@ button.selection-pane-button {
 .no-text-transform {
   text-transform: none;
 }
+
+.MuiDialog-root
+{
+  z-index: 2001!important;
+}
