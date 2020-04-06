@@ -115,16 +115,10 @@ class PolygonLayerFilterInput extends Component {
 
   	if(type === 'value')
   	{
-  		let float = parseFloat(e.target.value);
-  		let int = parseInt(float);
-  		console.log(typeof float, float, typeof int, int)
-  		if(float !== NaN && float !== int)
+  		let number = Number(e.target.value);
+  		if(!isNaN(number))
   		{
-  			stateObj[type] = float;
-  		}
-  		else if(int !== NaN)
-  		{
-  			stateObj[type] = int;
+  			stateObj[type] = number;
   		}
   		else
   		{
