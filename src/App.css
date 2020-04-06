@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+body {
+  overscroll-behavior-y: none;
+}
+
 .App {
   text-align: center;
 }
@@ -57,7 +61,7 @@
   color: #ffffff;
 }
 
-.main-block-accented h1, .main-block-accented h2, .main-block-accented h3, 
+.main-block-accented h1, .main-block-accented h2, .main-block-accented h3,
 .main-block-accented h4 {
   color: #ffffff;
 }
@@ -250,7 +254,7 @@ button.button-double {
 }
 
 .display-none {
-  display: none; 
+  display: none;
 }
 
 .clickable {
@@ -294,7 +298,8 @@ button.MuiTab-root {
 
 .hidden
 {
-  display: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 @keyframes App-logo-spin {
@@ -307,7 +312,7 @@ button.MuiTab-root {
 }
 
 @media only screen and (max-width : 640px) {
-  .main-block-header {    
+  .main-block-header {
       font-size: 22pt;
   }
 

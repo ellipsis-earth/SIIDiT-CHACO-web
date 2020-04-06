@@ -22,18 +22,23 @@ import { Button } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
 import Control from 'react-leaflet-control';
 
-import { LayerInfoCard } from './ControlsPane/PolygonLayersControl/LayerUtilities/LayerInfo';
+import { LayerInfoCard } from './ControlsPane/PolygonLayersControl/LayerUtilities/LayerInfo/LayerInfo';
 
 
 import './Viewer.css';
+
+const markerSize = {x: 17, y: 24};
 
 // This block is purely to get the marker icon of Leaflet to work.
 // Taken somewhere from the web.
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+  iconRetinaUrl: '/images/marker-2x.svg',
+  iconUrl: '/images/marker.svg',
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  className: 'layerDivIcon',
+  iconSize: [markerSize.x * 2, markerSize.y * 2],
+  iconAnchor: [markerSize.x, markerSize.y * 2],
 });
 
 const MAP_PANE_NAME = 'map_pane';
@@ -532,7 +537,7 @@ class Viewer extends PureComponent {
     let map = this.state.map;
     let body = {
       mapId: map.id,
-      timestamp: map.timestamps[this.state.timestampRange.end].timestampNumber
+      timestamp: map.timestamps[this.state.timestampRange.end].timestamp
     };
 
     let type = this.flyToInfo.type;
@@ -594,7 +599,7 @@ class Viewer extends PureComponent {
     }
   }
 
-  getLayerInfoContent = (content) => {
+  setLayerInfoContent = (content) => {
     this.setState({layerInfoContent: content});
   }
 
@@ -650,7 +655,8 @@ class Viewer extends PureComponent {
             onFeatureClick={this.selectFeature}
             onFlyTo={this.onFlyTo}
             onDeselect={this.deselectCurrentElement}
-            getLayerInfoContent={this.getLayerInfoContent}
+            setLayerInfoContent={this.setLayerInfoContent}
+            markerSize={markerSize}
           />
 
           <div className='viewer-pane map-pane' style={mapPaneStyle}>
@@ -669,6 +675,7 @@ class Viewer extends PureComponent {
               onDeselect={this.deselectCurrentElement}
               onDeletePolygon={this.updatePolygons}
               closePanes={this.closePanes}
+              onPolygonChange={this.onPolygonChange}
             />
             <Map
               center={DEFAULT_VIEWPORT.center}
@@ -681,10 +688,11 @@ class Viewer extends PureComponent {
                 <Button variant='contained' color='secondary' onClick={() => {window.open('https://www.youtube.com/watch?v=Eo6P0xEDE-Q&feature=youtu.be','_blank');}}><InfoIcon /></Button>
               </Control>
               {this.state.allLayers}
-              {this.state.geolocation ? <Marker position={this.state.geolocation}/> : null}
+              {this.state.geolocation ? <Marker position={this.state.geolocation} icon={ViewerUtility.returnMarker('#3388ff', markerSize, 'PersonPinCircle')}/> : null}
               <LayerInfoCard
                 content={this.state.layerInfoContent.content}
-                random={this.state.layerInfoContent.random}
+                contentId={this.state.layerInfoContent.contentId}
+                open={this.state.layerInfoContent.open}
                 ref={this.layerInfoCard}
                 closePanes={this.closePanes}
                 openPane={this.openPane}

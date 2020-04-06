@@ -85,7 +85,7 @@ class AnnotateTool extends Component {
     this.backgroundImage = null;
     this.polygonImage = null;
 
-    this.TILE_TYPE = this.props.map.model[0].visualizationName;
+    this.TILE_TYPE = this.props.map.models[0].visualizationName;
 
     this.lastPoint = {};
     this.mouseType = null;
@@ -103,7 +103,7 @@ class AnnotateTool extends Component {
     let stepper = (<div className='stepperContainer'>
       <div className='stepperInfo'>
         <span className='stepperInfoItem'>user: {this.props.tileInfo[step - 1] ? this.props.tileInfo[step - 1].user : 'automated'}</span>
-        <span className='stepperInfoItem'>date: {new Date(this.props.tileInfo[step - 1] ? this.props.tileInfo[step - 1].date : this.props.map.timestamps.find(x => x.timestampNumber === this.props.timestamp).dateTo).toLocaleString()}</span>
+        <span className='stepperInfoItem'>date: {new Date(this.props.tileInfo[step - 1] ? this.props.tileInfo[step - 1].date : this.props.map.timestamps.find(x => x.timestamp === this.props.timestamp).dateTo).toLocaleString()}</span>
       </div>
       <MobileStepper
       className='annotateStepper'
@@ -153,7 +153,7 @@ class AnnotateTool extends Component {
       urlLabel += tokenString;
     }
 
-    let labelImagePromise = ApiManager.get(urlLabel)
+    let labelImagePromise = ApiManager.get(urlLabel, null, this.props.user, 'v2')
       .catch(err => {
         if (err.status === 404 || err.status === 400) {
           return null;
@@ -215,7 +215,7 @@ class AnnotateTool extends Component {
             channels: ['geometries'],
             timestamp: this.props.timestamp,
           }
-          ApiManager.post('/raster/get', body, this.props.user)
+          ApiManager.post('/raster/get', body, this.props.user, 'v2')
           .then(raster => {
             let width = raster.data.length;
             let height = raster.data.length;
@@ -273,8 +273,8 @@ class AnnotateTool extends Component {
         this.canvasMain.lineJoin = 'miter';
         this.canvasMain.lineCap = 'butt';
 
-        let initZoomSize = window.innerWidth >= window.innerHeight ? (document.getElementsByClassName('canvas')[0].clientHeight / IMAGE_SIZE / ZOOM_STEP * 2) : (document.getElementsByClassName('canvas')[0].clientWidth / IMAGE_SIZE / ZOOM_STEP);
-        this.zoom(initZoomSize);
+        let initZoomSize = window.innerWidth >= window.innerHeight ? (document.getElementsByClassName('canvas')[0].clientHeight / IMAGE_SIZE / ZOOM_STEP) : (document.getElementsByClassName('canvas')[0].clientWidth / IMAGE_SIZE / ZOOM_STEP);
+        this.zoom(initZoomSize, 'init');
 
         this.setState({ init: true });
       }
@@ -308,7 +308,7 @@ class AnnotateTool extends Component {
 
     if(!stepper)
     {
-      ApiManager.get(urlRgb)
+      ApiManager.get(urlRgb, null, this.props.user, 'v2')
         .then(_rgbImageData => {
           rgbImageData = _rgbImageData;
           return labelImagePromise
@@ -411,7 +411,7 @@ class AnnotateTool extends Component {
     return translate;
   }
 
-  zoom = (direction) => {
+  zoom = (direction, zoomType) => {
     let translate = null;
 
     /*if (this.prevMousePos && this.state.init)
@@ -419,38 +419,51 @@ class AnnotateTool extends Component {
       translate = this.translateHelper();
     }*/
 
-    let newZoomFactor = null;
-    if(this.state.zoom < 2)
+    if (zoomType && zoomType === 'init')
     {
-      newZoomFactor = this.state.zoom + (ZOOM_STEP * direction / 2);
-    }
-    else
-    {
-      newZoomFactor = this.state.zoom + (ZOOM_STEP * direction * 2);
-    }
-
-    if (newZoomFactor > ZOOM_MAX) {
-      newZoomFactor = ZOOM_MAX;
-    }
-    else if (newZoomFactor < ZOOM_MIN) {
-      newZoomFactor = ZOOM_MIN
-    }
-
-    /*let canvases = document.getElementsByClassName('layers');
-
-    for (let i = 0; i < canvases.length; i++) {
-      console.log(canvases[i])
-      canvases[i].style.transform = 'translate(-50%, -50%) scale(' + newZoomFactor + ')';
-    }
-
-      console.log(this.canvasTemp.current)*/
-
-      /*console.log(translate)*/
+      let newZoomFactor = ZOOM_STEP * direction;
 
       let stateObj = { prevZoom: this.state.zoom,  zoom: newZoomFactor }
       if(translate){stateObj.translate = translate};
 
-    this.setState(stateObj);
+      this.setState(stateObj);
+    }
+    else
+    {
+      let newZoomFactor = null;
+      if(this.state.zoom < 2)
+      {
+        newZoomFactor = this.state.zoom + (ZOOM_STEP * direction / 2);
+      }
+      else
+      {
+        newZoomFactor = this.state.zoom + (ZOOM_STEP * direction * 2);
+      }
+
+      if (newZoomFactor > ZOOM_MAX) {
+        newZoomFactor = ZOOM_MAX;
+      }
+      else if (newZoomFactor < ZOOM_MIN) {
+        newZoomFactor = ZOOM_MIN
+      }
+
+      /*let canvases = document.getElementsByClassName('layers');
+
+      for (let i = 0; i < canvases.length; i++) {
+        console.log(canvases[i])
+        canvases[i].style.transform = 'translate(-50%, -50%) scale(' + newZoomFactor + ')';
+      }
+
+        console.log(this.canvasTemp.current)*/
+
+        /*console.log(translate)*/
+
+      let stateObj = { prevZoom: this.state.zoom,  zoom: newZoomFactor }
+      if(translate){stateObj.translate = translate};
+
+      this.setState(stateObj);
+    }
+
   }
 
   paint = (prevPos, currPos, strokeSize) => {
@@ -699,7 +712,7 @@ class AnnotateTool extends Component {
       newLabel: dataArray
     };
 
-    ApiManager.post('/raster/submit', body, this.props.user)
+    ApiManager.post('/raster/submit', body, this.props.user, 'v2')
       .then(() => {
         this.saving = false;
         this.props.onClose();
@@ -750,8 +763,6 @@ class AnnotateTool extends Component {
     if (!this.state.init) {
       return;
     }
-
-    console.log(e.nativeEvent.type);
 
     if(!this.mouseType || this.mouseType === e.nativeEvent.type)
     {
@@ -1043,7 +1054,7 @@ class AnnotateTool extends Component {
           strokeSize={this.state.strokeSize}
           hideLabel={this.state.hideLabel}
           hidePolygons={this.state.hidePolygons}
-          mask={this.props.map.model[0].usePolygons}
+          mask={this.props.map.models[0].usePolygons}
         />
         {this.state.stepper}
       </div>

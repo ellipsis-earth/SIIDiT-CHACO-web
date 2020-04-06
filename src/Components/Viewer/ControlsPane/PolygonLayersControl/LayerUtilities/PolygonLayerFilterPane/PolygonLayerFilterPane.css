@@ -1,0 +1,36 @@
+.polygonLayerFilterPane.filterCollapse
+{
+	width: 100%;
+}
+
+.polygonLayerFilterPane .addListOption
+{
+	text-align: center;
+	color: #7c9c1e;
+}
+
+.polygonLayerFilterPane .addListOption span:hover
+{
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.polygonLayerFilterPane .addListOption .inputContainer
+{
+	width: 100%;
+}
+
+.polygonLayerFilterPane .MuiInputLabel-shrink
+{
+	width: 125%;
+}
+
+.polygonLayerFilterPane .filterAddHandlingButtonsContainer
+{
+  justify-content: flex-end;
+}
+
+.polygonLayerFilterPane .MuiSelect-select.MuiSelect-select
+{
+	text-align: center;
+}

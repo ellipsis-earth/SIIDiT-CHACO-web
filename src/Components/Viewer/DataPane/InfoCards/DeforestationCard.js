@@ -62,6 +62,7 @@ class DeforestationCard extends PureComponent {
         results.push(...[].concat(...filtered))
       }
 
+      console.log(results);
       for (let k = 0; k < results.length; k++)
       {
         let element = results[k];
@@ -117,6 +118,7 @@ class DeforestationCard extends PureComponent {
   }
 
   render = () => {
+    console.log(this.props.totals);
     return (
       <Card className='data-pane-card TotalsCard' key={'deforestation:' + this.state.totalsOpen}>
         <CardHeader

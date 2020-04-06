@@ -141,30 +141,42 @@ class CustomPolygonControl extends PureComponent {
     let layer = this.state.selectedLayer;
 
     let feature = this.props.element.feature;
-    feature.properties = this.state.propertyValues;
 
-    console.log(this.props.map.timestamps, this.state.propertyValues)
-    let date = this.state.propertyValues.date ? this.state.propertyValues.date : moment().format(DATE_FORMAT);
+    let date = null;
+
+    if (this.state.propertyValues.date && this.state.propertyValues.date !== 'Invalid date')
+    {
+      date = this.state.propertyValues.date
+    }
+    else
+    {
+      date = moment(this.props.map.timestamps.find(x => x.timestamp === this.props.timestampRange.end).dateTo).format(DATE_FORMAT);
+    }
+
+
     //Check for timestamp closest to given date
-    let timestampNumber = this.props.map.timestamps[this.props.map.timestamps.length - 1].timestampNumber;
+    let timestampNumber = this.props.timestampRange.end;
 
     for (let i = 0; i < this.props.map.timestamps.length; i++) {
-      if(!moment(this.props.map.timestamps[i].dateTo).isBefore(date))
+      if(moment(this.props.map.timestamps[i].dateTo).format(DATE_FORMAT) === date)
       {
-        timestampNumber = i === 0 ? -1 : this.props.map.timestamps[i - 1].timestampNumber;
+        timestampNumber = this.props.map.timestamps[i].timestamp;
+      }
+      else if(!moment(this.props.map.timestamps[i].dateTo).isBefore(date))
+      {
+        timestampNumber = i === 0 ? -1 : this.props.map.timestamps[i - 1].timestamp;
       }
     }
 
-    console.log(this.props.map);
+    feature.properties = {timestamp: timestampNumber, date: date};
 
     let body = {
       mapId: this.props.map.id,
-      timestamp: timestampNumber,
-      layer: layer === -1 ? '09834825-403d-4e5b-9883-ac1bff14ae1f' : layer,
+      layer: layer === -1 ? this.props.map.layers.polygon.find(x => x.id === '09834825-403d-4e5b-9883-ac1bff14ae1f').name : this.props.map.layers.polygon.find(x => x.id === layer).name,
       feature: feature
     };
 
-    /*ApiManager.post('/geometry/addPolygon', body, this.props.user)
+    ApiManager.post('/geometry/add', body, this.props.user, 'v2')
       .then(() => {
         alert('Polygon received. It can take a few moments before it is visible.');
 
@@ -175,12 +187,13 @@ class CustomPolygonControl extends PureComponent {
         });
       })
       .catch(err => {
-        if (err && err.status === 400) {
+        if (err && err.status === 400)
+        {
           alert(err.message);
         }
-        console.log(err);
+        console.error(err);
         this.setState({ loading: false });
-      });*/
+      });
   }
 
   editCustomPolygon = () => {
@@ -287,7 +300,7 @@ class CustomPolygonControl extends PureComponent {
                 margin="normal"
                 label={property}
                 format={DATE_FORMAT}
-                value={this.state.propertyValues[property] ? this.state.propertyValues[property] : moment(this.props.map.timestamps.find(x => x.timestampNumber === this.props.timestampRange.end).dateTo).format(DATE_FORMAT)}
+                value={this.state.propertyValues[property] ? this.state.propertyValues[property] : moment(this.props.map.timestamps.find(x => x.timestamp === this.props.timestampRange.end).dateTo).format(DATE_FORMAT)}
                 onChange={(e) => this.onPropertyValueChange(e, property)}
                 DialogProps={{style:{zIndex: 2500}}}
                 disableFuture
@@ -319,6 +332,7 @@ class CustomPolygonControl extends PureComponent {
               color='primary'
               onClick={this.onSubmit}
               disabled={this.state.loading}
+              startIcon={this.state.loading ? <CircularProgress size={12}/> : null}
             >
               Submit
             </Button>
@@ -342,7 +356,6 @@ class CustomPolygonControl extends PureComponent {
           <CardContent>
             {/*layerSelect*/}
             {propertyInputs}
-            { this.state.loading ? <CircularProgress className='loading-spinner'/> : null}
           </CardContent>
 
         </Card>

@@ -43,25 +43,38 @@ class App extends Component {
     this.topItemRef = React.createRef();
     this.bottomItemRef = React.createRef();
 
+    this.dev = false;
+    let accountsUrl = '';
+
+    if(!this.dev)
+    {
+      accountsUrl = 'https://account.ellipsis-earth.com/';
+    }
+    else
+    {
+      let url = window.location.href;
+      let split = url.split(':');
+      accountsUrl = `${split[0]}:${split[1]}:${(parseInt(split[2].split('/')[0]) + 1)}/`;
+    }
+
     this.state = {
       init: false,
       user: null,
       accountOpen: false,
+      accountsUrl: accountsUrl,
     };
 
-    this.accountsUrl = 'https://account.ellipsis-earth.com/';
   }
 
   componentDidMount() {
     Modal.setAppElement('body');
 
     window.addEventListener("message", this.receiveMessage, false);
-        
     return this.retrieveUser();
   }
 
   receiveMessage = (event) => {
-    if (/*event.origin === 'http://localhost:3000' ||*/ 'https://account.ellipsis-earth.com') 
+    if (event.origin === 'http://localhost:3001' || 'https://account.ellipsis-earth.com')
     {
       if (event.data.type && event.data.type === 'login')
       {
@@ -139,6 +152,14 @@ class App extends Component {
     }
   }
 
+  initAccount = async () => {
+    let initObject = {type: 'init', dev: this.dev};
+    if (this.state.user){initObject.data = this.state.user}
+    let iframe = document.getElementById("account");
+
+    iframe.contentWindow.postMessage(initObject, this.state.accountsUrl);
+  }
+
   render() {
     if (!this.state.init) {
       return null;
@@ -193,8 +214,8 @@ class App extends Component {
                   />
                 }
               />
-              <div className={this.state.accountOpen ? 'account' : 'hidden'}>
-                <iframe src={this.accountsUrl} id='account'/>
+              <div className={this.state.accountOpen ? 'account' : 'account hidden'}>
+                <iframe src={this.state.accountsUrl} id='account' title='account' onLoad={this.initAccount}/>
               </div>
               <div ref={this.bottomItemRef}></div>
             </div>

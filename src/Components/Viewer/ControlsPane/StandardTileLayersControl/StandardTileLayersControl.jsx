@@ -176,7 +176,7 @@ class StandardTileLayersControl extends PureComponent {
 
     let body =  {
       mapId: map.id,
-      timestamp: map.timestamps[timestampRange.end].timestampNumber,
+      timestamp: map.timestamps[timestampRange.end].timestamp,
       xMin: bounds.xMin,
       xMax: bounds.xMax,
       yMin: bounds.yMin,
@@ -196,7 +196,7 @@ class StandardTileLayersControl extends PureComponent {
 
         body = {
           mapId: map.id,
-          timestamp: map.timestamps[timestampRange.end].timestampNumber,
+          timestamp: map.timestamps[timestampRange.end].timestamp,
           tileIds: standardTileIds.ids
         }
 
@@ -286,9 +286,9 @@ class StandardTileLayersControl extends PureComponent {
       bounds.yMax.toFixed(decimals)
     ];
 
-    let fileName = nameComponents.join('_') + '.geojson';
+    let fileName = nameComponents.join('_') + '.kml';
 
-    ViewerUtility.download(fileName, JSON.stringify(this.standardTilesGeoJson.geoJson), 'application/json');
+    ViewerUtility.download(fileName, JSON.stringify(this.standardTilesGeoJson.geoJson), 'application/vnd.google-earth.kml+xml');
   }
 
   render() {

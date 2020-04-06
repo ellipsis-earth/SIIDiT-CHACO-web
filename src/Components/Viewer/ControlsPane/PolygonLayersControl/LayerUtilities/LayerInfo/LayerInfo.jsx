@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  IconButton
-} from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+import IconButton from '@material-ui/core/IconButton';
+
 import InfoIcon from '@material-ui/icons/Info';
 import ClearIcon from '@material-ui/icons/Clear';
 
@@ -18,11 +17,14 @@ export default class LayerInfoButton extends PureComponent {
     super(props, context);
     this.state = {
       content: [],
+      open: false,
     };
   }
 
   clickHandle = () => {
-    this.props.getLayerInfoContent({content: this.state.content, random: Math.random()});
+    this.setState({open: !this.state.open}, () => {
+      this.props.setLayerInfoContent({content: this.state.content, contentId: this.props.id, open: this.state.open});
+    })
   }
 
   componentWillMount = () => {
@@ -51,9 +53,10 @@ export default class LayerInfoButton extends PureComponent {
 
   render = () => {
     return (this.state.content.length > 0 ?
-      <div className='LayerInfoButton'>
-        <IconButton onClick={this.clickHandle}><InfoIcon /></IconButton>
-    </div> : null);
+      <IconButton onClick={this.clickHandle} edge='end'>
+        <InfoIcon fontSize="small" />
+      </IconButton> : null
+    );
   }
 }
 
@@ -67,24 +70,27 @@ export class LayerInfoCard extends PureComponent {
   }
 
   componentDidUpdate = (prevProps) => {
-    if (prevProps.content !== this.props.content)
+    if (prevProps.content !== this.props.content || prevProps.contentId !== this.props.contentId)
     {
-      this.props.closePanes('info');
-      this.setState({content: this.props.content, hidden: false});
-      if (this.props.isMobile)
-      {
-        this.props.openPane(this.props.paneName, true)
-      }
+      this.openPane();
     }
 
-    if (prevProps.random !== this.props.random)
+    if (prevProps.open !== this.props.open && this.props.open === false)
     {
-      this.props.closePanes('info');
-      this.setState({hidden: false})
-      if (this.props.isMobile)
-      {
-        this.props.openPane(this.props.paneName, true)
-      }
+      this.onCloseClick();
+    }
+    else if (prevProps.open !== this.props.open && this.props.open === true)
+    {
+      this.openPane();
+    }
+  }
+
+  openPane = () => {
+    this.props.closePanes('info');
+    this.setState({content: this.props.content, hidden: false});
+    if (this.props.isMobile)
+    {
+      this.props.openPane(this.props.paneName, true)
     }
   }
 
@@ -93,6 +99,8 @@ export class LayerInfoCard extends PureComponent {
   }
 
   render = () => {
+    console.log(this.props.contentId);
+
     let title = '';
     let content = [];
 
@@ -113,14 +121,12 @@ export class LayerInfoCard extends PureComponent {
           className='material-card-header'
           title={title}
           action={
-            <div>
-              <IconButton
-                onClick={this.onCloseClick}
-                aria-label='Close'
-              >
-                <ClearIcon />
-              </IconButton>
-            </div>
+            <IconButton
+              onClick={this.onCloseClick}
+              aria-label='Close'
+            >
+              <ClearIcon />
+            </IconButton>
           }
         />
         <CardContent className={'card-content'}>
