@@ -2,16 +2,16 @@ import React, { PureComponent } from 'react';
 import { TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 
-import {
-  Card,
-  Checkbox,
-  CardHeader,
-  CardContent,
-  Collapse,
-  IconButton,
-  Typography,
-  FormControlLabel,
-} from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import Checkbox from '@material-ui/core/Checkbox';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import Collapse from '@material-ui/core/Collapse';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
+
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import Utility from '../../../../Utility';
@@ -281,6 +281,7 @@ class TileLayersControl extends PureComponent {
             maxNativeZoom={map.zoom}
             format={'image/png'}
             zIndex={zIndex}
+            className={tileLayer.name}
             bounds = {L.latLngBounds(L.latLng(map.yMin, map.xMin), L.latLng(map.yMax, map.xMax))}
           />);
 
