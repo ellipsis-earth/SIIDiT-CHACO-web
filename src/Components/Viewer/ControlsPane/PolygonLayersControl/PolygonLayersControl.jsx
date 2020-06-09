@@ -402,6 +402,10 @@ class PolygonLayersControl extends Component {
             this.layerGeoJsons[selectLayer.name] = null;
             return null;
           }
+          if (!polygonsGeoJson.features) {
+            this.layerGeoJsons[selectLayer.name] = null;
+            return null;
+          }
 
           this.layerGeoJsons[selectLayer.name] = {
             geoJson: polygonsGeoJson,

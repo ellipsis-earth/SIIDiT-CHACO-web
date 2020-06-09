@@ -21,6 +21,13 @@ import 'leaflet-draw/dist/leaflet.draw.css';
 import { Button } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
 import Control from 'react-leaflet-control';
+import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 
 import { LayerInfoCard } from './ControlsPane/PolygonLayersControl/LayerUtilities/LayerInfo/LayerInfo';
 
@@ -79,7 +86,9 @@ class Viewer extends PureComponent {
     this.layerInfoCard = React.createRef();
 
     this.state = {
+      dialogOpen: false,
       leafletMapViewport: DEFAULT_VIEWPORT,
+      massDelete: false,
       isSmallWindow: false,
 
       panes: [/*CONTROL_PANE_NAME,*/ MAP_PANE_NAME, DATA_PANE_NAME],
@@ -331,6 +340,17 @@ class Viewer extends PureComponent {
   }
 
   selectFeature = (type, feature, hasAggregatedData, color, cb, filter) => {
+
+    if(this.state.massDelete && feature.properties.layer == 'Cambio de uso detectado'){
+      let body = {'mapId':this.state.map.id, 'polygonId':feature.properties.id }
+      console.log(body)
+      ApiManager.post('/geometry/deletePolygon', body, this.props.user)
+      try{
+      this.updatePolygons()}catch(e){
+
+      }
+    }else{
+
     let element = {
       type: type,
       hasAggregatedData: hasAggregatedData,
@@ -382,6 +402,7 @@ class Viewer extends PureComponent {
         cb();
       }
     });
+  }
   }
 
   deselectCurrentElement = () => {
@@ -618,6 +639,20 @@ class Viewer extends PureComponent {
     }
   }
 
+handleClickOpen = () => {
+    this.setState({dialogOpen:true});
+  };
+
+handleClose = () => {
+  this.setState({dialogOpen:false});
+  };
+
+setMassDelete = () =>{
+  let massDelete = this.state.massDelete
+  massDelete = ! massDelete
+  this.setState({massDelete:massDelete, dialogOpen: false})
+}
+
   render() {
     let mapPaneStyle = {
       display: 'block',
@@ -637,6 +672,12 @@ class Viewer extends PureComponent {
     else {
       mapPaneStyle.display = 'none';
     }
+
+    let massDelete
+    if(this.state.map){
+    if (this.state.map.accessLevel >= 525){
+      massDelete = <Button variant='contained' onClick={()=>{ this.state.massDelete ? this.setMassDelete() : this.handleClickOpen() }}><DeleteSweepIcon color= "red" style={{ color: (this.state.massDelete ? 'red' : 'green') }}  /></Button>
+    }}
 
     return (
       <div className='viewer'>
@@ -686,6 +727,9 @@ class Viewer extends PureComponent {
             >
               <Control position="bottomright">
                 <Button variant='contained' color='secondary' onClick={() => {window.open('https://www.youtube.com/watch?v=Eo6P0xEDE-Q&feature=youtu.be','_blank');}}><InfoIcon /></Button>
+              </Control>
+              <Control position="topright">
+                {massDelete}
               </Control>
               {this.state.allLayers}
               {this.state.geolocation ? <Marker position={this.state.geolocation} icon={ViewerUtility.returnMarker('#3388ff', markerSize, 'PersonPinCircle')}/> : null}
@@ -740,6 +784,32 @@ class Viewer extends PureComponent {
             </div>
           </div>
         </div>
+
+        <Dialog
+          open={this.state.dialogOpen}
+          keepMounted
+          onClose={this.handleClose}
+          aria-labelledby="alert-dialog-slide-title"
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle id="alert-dialog-slide-title">{"¿Estás segura de que quieres masa delte?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              En el modo de eliminación masiva, se eliminarán todos los polígonos en los que haga clic. Vuelva a hacer clic en el botón para salir de este modo.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="primary">
+              No
+            </Button>
+            <div className='danger-zone-block'>
+            <Button onClick={this.setMassDelete}>
+              Si, yo entiendo
+            </Button>
+            </div>
+          </DialogActions>
+        </Dialog>
+
       </div>
     );
   }
