@@ -43,8 +43,8 @@ const Text = [
 		text: [
 			"Puede importar los datos en QGIS o ArcGIS utilizando estos enlaces.",
 			"",
-			"WMTS: https://app.ellipsis-earth.com/wmts/6b696129-659a-4cf4-8dd6-2cf0642f58db",
-			"WFS: https://app.ellipsis-earth.com/wfs/6b696129-659a-4cf4-8dd6-2cf0642f58db"
+			"WMTS: https://api.ellipsis-earth.com/wmts/6b696129-659a-4cf4-8dd6-2cf0642f58db",
+			"WFS: https://api.ellipsis-earth.com/wfs/6b696129-659a-4cf4-8dd6-2cf0642f58db"
 		],
 		defaultOpen: false,
 	},
