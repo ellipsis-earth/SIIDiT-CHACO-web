@@ -48,7 +48,7 @@ class App extends Component {
 
     if(!this.dev)
     {
-      accountsUrl = 'https://account.ellipsis-earth.com/';
+      accountsUrl = 'https://account.ellipsis-drive.com/';
     }
     else
     {
